@@ -20,3 +20,24 @@ npx sequelize-cli model:generate --name Implementation --attributes studentID:in
 #run this after all
 npx sequelize-cli db:migrate
 
+# generate seeder file - need data for seeder
+npx sequelize-cli seed:generate --name demo-academic-affair
+
+npx sequelize-cli seed:generate --name demo-account
+
+npx sequelize-cli seed:generate --name demo-announcement
+
+npx sequelize-cli seed:generate --name demo-implementation
+
+npx sequelize-cli seed:generate --name demo-project
+
+npx sequelize-cli seed:generate --name demo-report
+
+npx sequelize-cli seed:generate --name demo-student
+
+npx sequelize-cli seed:generate --name demo-teacher
+
+npx sequelize-cli seed:generate --name demo-user
+
+
+
