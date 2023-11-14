@@ -7,12 +7,12 @@ const { SEPJ2N2324 } = require("./temp-data/se-pj-da2-23-24");
 module.exports = {
   async up(queryInterface, Sequelize) {
     // Config
-    const numberOfAA = 2;
-    const numberOfStudent = 3;
-    const numberOfTeacher = 4;
+    const numberOfAA = 4;
+    const numberOfStudent = 120;
+    const numberOfTeacher = 10;
     const numberOfUser = numberOfAA + numberOfStudent + numberOfTeacher;
     const numberOfAccount = numberOfUser;
-    const numberOfProject = 50;
+    const numberOfProject = 78;
     const numberOfImplementation = numberOfProject;
     // Constant
     const roleList = ["aa", "teacher", "student", "admin"];
@@ -97,22 +97,22 @@ module.exports = {
     };
 
     const getRandUniqStudentID = () => {
-      let tmpF = ueNStudentF.enforce(() => {
-        return faker.number.int({
+      const genStudentID = () => {
+        let tmpF = faker.number.int({
           min: 18,
           max: 23,
         });
-      });
-      let tmpL = (
-        "000" +
-        ueNStudentL.enforce(() => {
-          return faker.number.int({
+        let tmpL = (
+          "000" +
+          faker.number.int({
             min: 1,
             max: 9999,
-          });
-        })
-      ).substring(4);
-      return tmpF + "52" + tmpL;
+          })
+        ).substring(4);
+        return tmpF + "52" + tmpL;
+      };
+
+      return ueNStudentL.enforce(genStudentID);
     };
 
     const getRandUniqTeacherCode = () => {
