@@ -9,6 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Implementation.belongsTo(models.Student, { foreignKey: "studentID" });
+      Implementation.belongsTo(models.Project, { foreignKey: "projectID" });
     }
   }
   Implementation.init(
@@ -16,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       studentID: DataTypes.INTEGER,
       projectID: DataTypes.INTEGER,
       score: DataTypes.INTEGER,
-      status: DataTypes.STRING,
+      isCompleted: DataTypes.BOOLEAN,
     },
     {
       sequelize,

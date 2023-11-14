@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Project.belongsTo(models.Teacher, { foreignKey: "teacherID" });
+      Project.hasOne(models.Implementation);
     }
   }
   Project.init(

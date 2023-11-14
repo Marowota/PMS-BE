@@ -18,8 +18,8 @@ module.exports = {
       score: {
         type: Sequelize.INTEGER,
       },
-      status: {
-        type: Sequelize.STRING,
+      isCompleted: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
