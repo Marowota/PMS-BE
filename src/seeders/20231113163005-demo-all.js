@@ -8,11 +8,11 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     // Config
     const numberOfAA = 4;
-    const numberOfStudent = 120;
+    const numberOfStudent = 10;
     const numberOfTeacher = 10;
     const numberOfUser = numberOfAA + numberOfStudent + numberOfTeacher;
     const numberOfAccount = numberOfUser;
-    const numberOfProject = 78;
+    const numberOfProject = 10;
     const numberOfImplementation = numberOfProject;
     // Constant
     const roleList = ["aa", "teacher", "student", "admin"];
