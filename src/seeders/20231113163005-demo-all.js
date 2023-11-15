@@ -1,5 +1,5 @@
 ("use strict");
-const { faker } = require("@faker-js/faker");
+const { fakerVI } = require("@faker-js/faker");
 const { UniqueEnforcer } = require("enforce-unique");
 const { SEPJ1N2324 } = require("./temp-data/se-pj-da1-23-24");
 const { SEPJ2N2324 } = require("./temp-data/se-pj-da2-23-24");
@@ -7,6 +7,7 @@ const { SEPJ2N2324 } = require("./temp-data/se-pj-da2-23-24");
 module.exports = {
   async up(queryInterface, Sequelize) {
     // Config
+    const faker = fakerVI;
     const numberOfAA = 4;
     const numberOfStudent = 10;
     const numberOfTeacher = 10;
@@ -155,12 +156,16 @@ module.exports = {
         name: null,
         email: null,
         dateOfBirth: null,
+        phone: null,
       })
       .map(() => {
+        const fn = faker.person.firstName();
+        const ln = faker.person.lastName();
         return {
-          name: faker.person.fullName(),
-          email: faker.internet.email(),
+          name: ln + " " + fn,
+          email: faker.internet.email({ firstName: fn, lastName: ln }),
           dateOfBirth: faker.date.birthdate(),
+          phone: faker.phone.number(),
         };
       });
 
