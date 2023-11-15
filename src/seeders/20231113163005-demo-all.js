@@ -81,7 +81,7 @@ module.exports = {
       try {
         let randIndex = faker.number.int({
           min: 0,
-          max: numberOfSomething - 1,
+          max: somethingInDb.length - 1,
         });
         let bruh = somethingInDb[randIndex].id;
         somethingInDb.splice(randIndex, 1);
