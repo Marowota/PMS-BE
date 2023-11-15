@@ -36,7 +36,12 @@ module.exports = {
       "Khoa học Dữ liệu",
     ];
     const academicDegreeList = [
-      "Cử nhân, Thạc sĩ, Tiến sĩ, Phó giáo sư, Giáo sư",
+      "Cử nhân",
+      "Kĩ sư",
+      "Thạc sĩ",
+      "Tiến sĩ",
+      "Phó giáo sư",
+      "Giáo sư",
     ];
     // Unique Enforcers
     let ueId = new UniqueEnforcer();
@@ -61,6 +66,7 @@ module.exports = {
       return bruh;
     };
 
+    //if done then remove rather than enforce
     const getRandUniqSomethingID = (
       somethingInDb,
       ueSomethingId,
@@ -68,18 +74,17 @@ module.exports = {
       nullable = false
     ) => {
       if (nullable) {
-        if (faker.datatype.boolean(0.5)) return null;
+        if (faker.datatype.boolean(0.5)) {
+          return null;
+        }
       }
       try {
-        let bruh =
-          somethingInDb[0][
-            ueSomethingId.enforce(() => {
-              return faker.number.int({
-                min: 0,
-                max: numberOfSomething - 1,
-              });
-            })
-          ].id;
+        let randIndex = faker.number.int({
+          min: 0,
+          max: numberOfSomething - 1,
+        });
+        let bruh = somethingInDb[randIndex].id;
+        somethingInDb.splice(randIndex, 1);
         return bruh;
       } catch {
         return null;
@@ -102,13 +107,13 @@ module.exports = {
           min: 18,
           max: 23,
         });
-        let tmpL = (
+        let tmpL =
           "000" +
           faker.number.int({
             min: 1,
             max: 9999,
-          })
-        ).substring(4);
+          });
+        tmpL = tmpL.substring(tmpL.length - 4);
         return tmpF + "52" + tmpL;
       };
 
@@ -169,6 +174,9 @@ module.exports = {
 
     // Account
 
+    let accUserInDb = Array.from(userInDb[0]);
+
+    console.log(accUserInDb.length);
     let accountList = Array(numberOfAccount)
       .fill({
         username: null,
@@ -178,7 +186,7 @@ module.exports = {
         userID: null,
       })
       .map(() => {
-        let temp = getRandUniqSomethingID(userInDb, ueId, numberOfUser);
+        let temp = getRandUniqSomethingID(accUserInDb, ueId, numberOfUser);
         return {
           username: faker.internet.userName(),
           password: faker.internet.password(),
@@ -195,6 +203,10 @@ module.exports = {
 
     // Academic affair
 
+    let aaStuTechUserInDb = Array.from(userInDb[0]);
+
+    console.log(aaStuTechUserInDb.length);
+
     let aaList = Array(numberOfAA)
       .fill({
         academicAffairCode: null,
@@ -205,7 +217,7 @@ module.exports = {
         return {
           academicAffairCode: getRandUniqAAID(),
           faculty: faker.helpers.arrayElement(facultyList),
-          userID: getRandUniqSomethingID(userInDb, ueId, numberOfUser),
+          userID: getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser),
         };
       });
 
@@ -215,6 +227,7 @@ module.exports = {
 
     // Student
 
+    console.log(aaStuTechUserInDb.length);
     let studentList = Array(numberOfStudent)
       .fill({
         studentCode: null,
@@ -229,20 +242,21 @@ module.exports = {
           class: "",
           major: faker.helpers.arrayElement(majorList),
           status: faker.number.int({ min: 0, max: 2 }),
-          userID: getRandUniqSomethingID(userInDb, ueId, numberOfUser),
+          userID: getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser),
         };
       });
-
-    const studentInDb = await queryInterface.sequelize.query(
-      `SELECT id from student order by id desc limit ${numberOfStudent}`
-    );
 
     await queryInterface.bulkInsert("Student", studentList, {});
 
     console.log(">> Seeded Student successfully");
 
+    const studentInDb = await queryInterface.sequelize.query(
+      `SELECT id from student order by id desc limit ${numberOfStudent}`
+    );
+
     // Teacher
 
+    console.log(aaStuTechUserInDb.length);
     let teacherList = Array(numberOfTeacher)
       .fill({
         teacherCode: null,
@@ -255,7 +269,7 @@ module.exports = {
           teacherCode: getRandUniqTeacherCode(),
           faculty: faker.helpers.arrayElement(facultyList),
           academicDegree: faker.helpers.arrayElement(academicDegreeList),
-          userID: getRandUniqSomethingID(userInDb, ueId, numberOfUser),
+          userID: getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser),
         };
       });
 
@@ -304,6 +318,9 @@ module.exports = {
 
     // Implementation
 
+    let impStudentInDb = Array.from(studentInDb[0]);
+    let impProjectInDb = Array.from(projectInDb[0]);
+
     let implementationList = Array(numberOfImplementation)
       .fill({
         studentID: null,
@@ -314,13 +331,13 @@ module.exports = {
       .map(() => {
         return {
           studentID: getRandUniqSomethingID(
-            studentInDb,
+            impStudentInDb,
             ueStudentId,
             numberOfStudent,
             true
           ),
           projectID: getRandUniqSomethingID(
-            projectInDb,
+            impProjectInDb,
             ueProjectId,
             numberOfProject
           ),

@@ -1,7 +1,8 @@
 const aaService = require("../service/AcademicAffairService");
 
 const testAA = () => {
-  aaService.getAAList();
+  aaService.getAAById(129);
+  aaService.getAAList(true);
 };
 
 module.exports = {

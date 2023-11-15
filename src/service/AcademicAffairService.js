@@ -13,7 +13,18 @@ const getAAById = async (id) => {
   aa = await db.AcademicAffair.findOne({
     where: { id: id },
   });
-  return (aa = aa.get({ plain: true }));
+  aa = aa.get({ plain: true });
+  //console.log(aa);
+  return aa;
+};
+
+const getAAList = async (Simplyfy = false) => {
+  let aaList = await db.AcademicAffair.findAll();
+  if (Simplyfy) {
+    aaList = aaList.map((value) => value.dataValues);
+  }
+  //console.log(aaList);
+  return aaList;
 };
 
 const updateAA = async (id, aacode, faculty, position) => {
@@ -30,9 +41,10 @@ const updateAA = async (id, aacode, faculty, position) => {
   );
 };
 
-const getAAList = async () => {
-  let aaList = await db.AcademicAffair.findAll();
-  console.log(aaList);
+const deleteAA = async (id) => {
+  db.AcademicAffair.destroy({
+    where: { id: id },
+  });
 };
 
 module.exports = {
@@ -40,4 +52,5 @@ module.exports = {
   getAAById,
   getAAList,
   updateAA,
+  deleteAA,
 };
