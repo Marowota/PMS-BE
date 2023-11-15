@@ -9,6 +9,7 @@ const testAA = () => {
 const getAllProjects = async (req, res) => {
   try {
     const projects = await pjService.getPjList();
+    console.log(">>> check pjlist:", projects);
     return res.status(200).json({
       EM: projects.EM,
       EC: projects.EC,
