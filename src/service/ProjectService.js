@@ -41,9 +41,10 @@ const isProjectValid = async (projectName) => {
   return true;
 };
 
-const createProject = async (projectData) => {
+const createProject = async (rawData) => {
   try {
-    if (await isProjectValid(projectData.name)) {
+    console.log(">>> check projectData:", rawData);
+    if (await isProjectValid(rawData.projectName)) {
       return {
         EM: "Project is already exist",
         EC: -1,
@@ -52,12 +53,12 @@ const createProject = async (projectData) => {
     }
 
     await db.Project.create({
-      name: projectData.name,
-      teacherID: projectData.teacherID,
-      requirement: projectData.requirement,
+      name: rawData.projectName,
+      teacherID: rawData.teacherId,
+      requirement: rawData.projectRequirement,
       maxStudentNumber: 2,
-      type: projectData.type,
-      faculty: projectData.faculty,
+      type: rawData.projectType,
+      faculty: rawData.projectFaculty,
       isPublic: true,
       isRegistered: false,
     });
