@@ -1,17 +1,16 @@
-const express = require("express");
-const apiController = require("../controller/apiController");
+import express from "express";
+import projectController from "../controller/projectController";
+import teacherController from "../controller/teacherController";
+
 const router = express.Router();
 
 const initApiRoutes = (app) => {
-  router.get("/", (req, res) => {
-    apiController.testAA();
-    res.send("Birds home page");
-  });
-  router.get("/about", (req, res) => {
-    res.send("About birds");
-  });
+  //project
+  router.get("/project/list", projectController.getAllProjects);
+  router.post("/project/create", projectController.postCreateProject);
 
-  router.get("/project/list", apiController.getAllProjects);
+  //teacher
+  router.get("/teacher/list", teacherController.getAllTeacher);
 
   return app.use("/api/v1", router);
 };
