@@ -1,7 +1,7 @@
 import express from "express";
 import projectController from "../controller/projectController";
 import teacherController from "../controller/teacherController";
-
+import announcementController from "../controller/announcementController";
 const router = express.Router();
 
 const initApiRoutes = (app) => {
@@ -11,6 +11,9 @@ const initApiRoutes = (app) => {
 
   //teacher
   router.get("/teacher/list", teacherController.getAllTeacher);
+
+  //announcement
+  router.get("/announcement/list", announcementController.getAllAnnouncement);
 
   return app.use("/api/v1", router);
 };

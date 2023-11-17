@@ -9,7 +9,7 @@ module.exports = {
     // Config
     const faker = fakerVI;
     const numberOfAA = 4;
-    const numberOfStudent = 10;
+    const numberOfStudent = 100;
     const numberOfTeacher = 10;
     const numberOfUser = numberOfAA + numberOfStudent + numberOfTeacher;
     const numberOfAccount = numberOfUser;
