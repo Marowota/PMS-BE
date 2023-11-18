@@ -15,6 +15,7 @@ module.exports = {
     const numberOfAccount = numberOfUser;
     const numberOfProject = 10;
     const numberOfImplementation = numberOfProject;
+    const numberOfAnnouncement = 50;
     // Constant
     const roleList = ["aa", "teacher", "student", "admin"];
     const facultyList = [
@@ -354,9 +355,38 @@ module.exports = {
     await queryInterface.bulkInsert("Implementation", implementationList, {});
 
     console.log(">> Seeded Implementation successfully");
+
+    //Announcement
+
+    let announcementList = Array(numberOfAnnouncement)
+      .fill({
+        title: null,
+        content: null,
+        dateCreated: null,
+        dateUpdated: null,
+        isPublic: null,
+      })
+      .map(() => {
+        let tmp = faker.date.past();
+        return {
+          title: faker.commerce.product(),
+          content: faker.commerce.productDescription(),
+          dateCreated: tmp,
+          dateUpdated: faker.date.between({
+            from: tmp,
+            to: new Date(),
+          }),
+          isPublic: faker.datatype.boolean(0.75),
+        };
+      });
+
+    await queryInterface.bulkInsert("Announcement", announcementList, {});
+
+    console.log(">> Seeded Announcement successfully");
   },
 
   async down(queryInterface, Sequelize) {
+    await queryInterface.bulkDelete("Announcement", null, {});
     await queryInterface.bulkDelete("implementation", null, {});
     await queryInterface.bulkDelete("Project", null, {});
     await queryInterface.bulkDelete("Teacher", null, {});
