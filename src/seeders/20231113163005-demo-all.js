@@ -8,12 +8,12 @@ module.exports = {
   async up(queryInterface, Sequelize) {
     // Config
     const faker = fakerVI;
-    const numberOfAA = 4;
-    const numberOfStudent = 100;
+    const numberOfAA = 5;
+    const numberOfStudent = 50;
     const numberOfTeacher = 10;
     const numberOfUser = numberOfAA + numberOfStudent + numberOfTeacher;
     const numberOfAccount = numberOfUser;
-    const numberOfProject = 10;
+    const numberOfProject = 100;
     const numberOfImplementation = numberOfProject;
     const numberOfAnnouncement = 50;
     // Constant

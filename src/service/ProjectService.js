@@ -1,4 +1,5 @@
 import db from "../models/index";
+import { Op } from "sequelize";
 
 const getProjectList = async () => {
   try {
@@ -85,7 +86,6 @@ const isProjectValid = async (projectName) => {
 
 const createProject = async (rawData) => {
   try {
-    console.log(">>> check projectData:", rawData);
     if (await isProjectValid(rawData.projectName)) {
       return {
         EM: "Project is already exist",
@@ -119,8 +119,33 @@ const createProject = async (rawData) => {
   }
 };
 
+const deleteProject = async (projectIds) => {
+  try {
+    console.log(">>> check projectIds", projectIds);
+    await db.Project.destroy({
+      where: {
+        id: {
+          [Op.in]: projectIds,
+        },
+      },
+    });
+    return {
+      EM: "Delete project successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getProjectList,
   createProject,
   getProjectWithPagination,
+  deleteProject,
 };

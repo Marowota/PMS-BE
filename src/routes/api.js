@@ -8,12 +8,13 @@ const initApiRoutes = (app) => {
   //project
   router.get("/project/read", projectController.getAllProjects);
   router.post("/project/create", projectController.postCreateProject);
+  router.delete("/project/delete", projectController.handleDeleteProject);
 
   //teacher
   router.get("/teacher/read", teacherController.getAllTeacher);
 
   //announcement
-  router.get("/announcement/list", announcementController.getAllAnnouncement);
+  router.get("/announcement/read", announcementController.getAllAnnouncement);
 
   return app.use("/api/v1", router);
 };

@@ -3,7 +3,6 @@ import teacherService from "../service/TeacherService";
 const getAllTeacher = async (req, res) => {
   try {
     const teachers = await teacherService.getTeacherList();
-    console.log(">>> check teacher_list:", teachers);
     return res.status(200).json({
       EM: teachers.EM,
       EC: teachers.EC,
