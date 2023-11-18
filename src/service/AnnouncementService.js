@@ -68,4 +68,33 @@ const getAnnouncementPagination = async (page, limit) => {
   }
 };
 
-module.exports = { getAnnouncementList, getAnnouncementPagination };
+const createAnnouncement = async (rawData) => {
+  try {
+    const currentTime = new Date();
+    await db.Announcement.create({
+      title: rawData.title,
+      content: rawData.content,
+      isPublic: rawData.isPublic,
+      dateCreated: currentTime,
+      dateUpdated: currentTime,
+    });
+
+    return {
+      EM: "New announcement created successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
+module.exports = {
+  getAnnouncementList,
+  getAnnouncementPagination,
+  createAnnouncement,
+};
