@@ -31,6 +31,48 @@ const getProjectList = async () => {
   }
 };
 
+const getProjectWithPagination = async (page, limit) => {
+  try {
+    let offset = (page - 1) * limit;
+    const { count, rows } = await db.Project.findAndCountAll({
+      include: {
+        model: db.Teacher,
+        required: true,
+        attributes: ["faculty"],
+        include: {
+          model: db.User,
+          required: true,
+          attributes: ["name", "email", "phone"],
+        },
+      },
+      attributes: ["id", "name", "type", "faculty"],
+      raw: true,
+      nest: true,
+      offset: offset,
+      limit: limit,
+    });
+
+    let totalPage = Math.ceil(count / limit);
+    let data = {
+      totalRows: count,
+      totalPage: totalPage,
+      projects: rows,
+    };
+
+    return {
+      EM: "Get data successfully",
+      EC: 0,
+      DT: data,
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 const isProjectValid = async (projectName) => {
   let projectCheck = await db.Project.findOne({
     where: {
@@ -80,4 +122,5 @@ const createProject = async (rawData) => {
 module.exports = {
   getProjectList,
   createProject,
+  getProjectWithPagination,
 };

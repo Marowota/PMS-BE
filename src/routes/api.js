@@ -6,11 +6,11 @@ const router = express.Router();
 
 const initApiRoutes = (app) => {
   //project
-  router.get("/project/list", projectController.getAllProjects);
+  router.get("/project/read", projectController.getAllProjects);
   router.post("/project/create", projectController.postCreateProject);
 
   //teacher
-  router.get("/teacher/list", teacherController.getAllTeacher);
+  router.get("/teacher/read", teacherController.getAllTeacher);
 
   //announcement
   router.get("/announcement/list", announcementController.getAllAnnouncement);
