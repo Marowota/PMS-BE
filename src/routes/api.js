@@ -7,8 +7,10 @@ const router = express.Router();
 const initApiRoutes = (app) => {
   //project
   router.get("/project/read", projectController.getAllProjects);
+  router.get("/project/readById", projectController.getProjectById);
   router.post("/project/create", projectController.postCreateProject);
   router.delete("/project/delete", projectController.handleDeleteProject);
+  router.put("/project/update/:id", projectController.putUpdateProject);
 
   //teacher
   router.get("/teacher/read", teacherController.getAllTeacher);

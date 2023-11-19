@@ -1,6 +1,39 @@
 import db from "../models/index";
 import { Op } from "sequelize";
 
+const getProjectById = async (projectId) => {
+  try {
+    let project = await db.Project.findOne({
+      where: { id: projectId },
+      include: {
+        model: db.Teacher,
+        required: true,
+        attributes: ["faculty"],
+        include: {
+          model: db.User,
+          required: true,
+          attributes: ["name", "email", "phone"],
+        },
+      },
+      attributes: ["id", "name", "type", "faculty", "requirement"],
+      raw: true,
+      nest: true,
+    });
+    console.log(">>> check project:", project);
+    return {
+      EM: "Success",
+      EC: 0,
+      DT: project,
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 const getProjectList = async () => {
   try {
     let projectList = await db.Project.findAll({
@@ -143,9 +176,55 @@ const deleteProject = async (projectIds) => {
   }
 };
 
+const updateProject = async (project, projectId) => {
+  try {
+    console.log(">>> check projectid:", projectId);
+    console.log(">>> check project:", project);
+    // await db.Project.update(
+    //   {
+    //     name: project.projectName,
+    //     requirement: project.projectRequirement,
+    //     type: project.projectType,
+    //     faculty: project.projectFaculty,
+    //     teacherID: project.teacherId,
+    //   },
+    //   {
+    //     where: {
+    //       id: projectId,
+    //     },
+    //   }
+    // );
+
+    const user = await db.Project.findOne({ where: { id: projectId } });
+    if (user) {
+      await user.update({
+        name: project.projectName,
+        requirement: project.projectRequirement,
+        type: project.projectType,
+        faculty: project.projectFaculty,
+        teacherID: project.teacherId,
+      });
+    }
+    return {
+      EM: "Update project successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    console.log(">>> check error:", error);
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getProjectList,
   createProject,
   getProjectWithPagination,
   deleteProject,
+  updateProject,
+  getProjectById,
 };
