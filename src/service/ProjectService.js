@@ -8,7 +8,7 @@ const getProjectById = async (projectId) => {
       include: {
         model: db.Teacher,
         required: true,
-        attributes: ["faculty"],
+        attributes: ["id", "faculty", "academicDegree"],
         include: {
           model: db.User,
           required: true,
@@ -40,14 +40,14 @@ const getProjectList = async () => {
       include: {
         model: db.Teacher,
         required: true,
-        attributes: ["faculty", "academicDegree"],
+        attributes: ["id", "faculty", "academicDegree"],
         include: {
           model: db.User,
           required: true,
           attributes: ["name", "email", "phone"],
         },
       },
-      attributes: ["id", "name", "type", "faculty"],
+      attributes: ["id", "name", "type", "faculty", "requirement"],
       raw: true,
       nest: true,
     });

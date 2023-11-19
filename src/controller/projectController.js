@@ -31,6 +31,7 @@ const getAllProjects = async (req, res) => {
       });
     } else {
       const projects = await ProjectService.getProjectList();
+      console.log(">>>> check projects:", projects);
       return res.status(200).json({
         EM: projects.EM,
         EC: projects.EC,
