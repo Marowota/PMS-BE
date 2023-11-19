@@ -204,7 +204,6 @@ const updateProject = async (project, projectId) => {
         faculty: project.projectFaculty,
         teacherID: project.teacherId,
       });
-      user.save();
     }
     return {
       EM: "Update project successfully",
