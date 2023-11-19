@@ -12,7 +12,6 @@ const getTeacherList = async () => {
       raw: true,
       nest: true,
     });
-    console.log(">>> check teacherList:", teacherList);
     return {
       EM: "Success",
       EC: 0,

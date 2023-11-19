@@ -1,5 +1,23 @@
 import ProjectService from "../service/ProjectService";
 
+const getProjectById = async (req, res) => {
+  try {
+    console.log(">>> check req.params", +req.query.projectId);
+    const project = await ProjectService.getProjectById(+req.query.projectId);
+    return res.status(200).json({
+      EM: project.EM,
+      EC: project.EC,
+      DT: project.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 const getAllProjects = async (req, res) => {
   try {
     if (req.query.page && req.query.limit) {
@@ -47,7 +65,6 @@ const postCreateProject = async (req, res) => {
 
 const handleDeleteProject = async (req, res) => {
   try {
-    console.log(">>> req.body", req.body);
     let deleteInfo = await ProjectService.deleteProject(req.body.projectIds);
     return res.status(200).json({
       EM: deleteInfo.EM,
@@ -63,8 +80,33 @@ const handleDeleteProject = async (req, res) => {
   }
 };
 
+const putUpdateProject = async (req, res) => {
+  try {
+    console.log(">>> check req.body:", req.body);
+    console.log(">>> check req.params:", req.params);
+    console.log(">>> req.query", req.query);
+    let updateInfo = await ProjectService.updateProject(
+      req.body,
+      req.params.id
+    );
+    return res.status(200).json({
+      EM: updateInfo.EM,
+      EC: updateInfo.EC,
+      DT: updateInfo.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 module.exports = {
   getAllProjects,
   postCreateProject,
   handleDeleteProject,
+  putUpdateProject,
+  getProjectById,
 };
