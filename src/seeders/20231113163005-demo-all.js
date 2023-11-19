@@ -37,14 +37,7 @@ module.exports = {
       "Thương mai điện tử",
       "Khoa học Dữ liệu",
     ];
-    const academicDegreeList = [
-      "Cử nhân",
-      "Kĩ sư",
-      "Thạc sĩ",
-      "Tiến sĩ",
-      "Phó giáo sư",
-      "Giáo sư",
-    ];
+    const academicDegreeList = ["CN", "KS", "ThS", "TS"];
     // Unique Enforcers
     let ueId = new UniqueEnforcer();
     let ueTeacherId = new UniqueEnforcer();

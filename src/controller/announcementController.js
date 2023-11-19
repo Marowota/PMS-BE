@@ -31,4 +31,23 @@ const getAllAnnouncement = async (req, res) => {
   }
 };
 
-module.exports = { getAllAnnouncement };
+const postCreateAnnouncement = async (req, res) => {
+  try {
+    let announcementData = await AnnouncementService.createAnnouncement(
+      req.body
+    );
+    return res.status(200).json({
+      EM: announcementData.EM,
+      EC: announcementData.EC,
+      DT: announcementData.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
+module.exports = { getAllAnnouncement, postCreateAnnouncement };

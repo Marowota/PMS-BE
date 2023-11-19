@@ -17,6 +17,10 @@ const initApiRoutes = (app) => {
 
   //announcement
   router.get("/announcement/read", announcementController.getAllAnnouncement);
+  router.post(
+    "/announcement/create",
+    announcementController.postCreateAnnouncement
+  );
 
   return app.use("/api/v1", router);
 };

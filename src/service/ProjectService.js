@@ -40,7 +40,7 @@ const getProjectList = async () => {
       include: {
         model: db.Teacher,
         required: true,
-        attributes: ["faculty"],
+        attributes: ["faculty", "academicDegree"],
         include: {
           model: db.User,
           required: true,
@@ -72,7 +72,7 @@ const getProjectWithPagination = async (page, limit) => {
       include: {
         model: db.Teacher,
         required: true,
-        attributes: ["faculty"],
+        attributes: ["faculty", "academicDegree"],
         include: {
           model: db.User,
           required: true,
