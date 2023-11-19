@@ -19,7 +19,6 @@ const getProjectById = async (projectId) => {
       raw: true,
       nest: true,
     });
-    console.log(">>> check project:", project);
     return {
       EM: "Success",
       EC: 0,
@@ -154,7 +153,6 @@ const createProject = async (rawData) => {
 
 const deleteProject = async (projectIds) => {
   try {
-    console.log(">>> check projectIds", projectIds);
     await db.Project.destroy({
       where: {
         id: {
@@ -178,23 +176,6 @@ const deleteProject = async (projectIds) => {
 
 const updateProject = async (project, projectId) => {
   try {
-    console.log(">>> check projectid:", projectId);
-    console.log(">>> check project:", project);
-    // await db.Project.update(
-    //   {
-    //     name: project.projectName,
-    //     requirement: project.projectRequirement,
-    //     type: project.projectType,
-    //     faculty: project.projectFaculty,
-    //     teacherID: project.teacherId,
-    //   },
-    //   {
-    //     where: {
-    //       id: projectId,
-    //     },
-    //   }
-    // );
-
     const user = await db.Project.findOne({ where: { id: projectId } });
     if (user) {
       await user.update({
@@ -211,7 +192,6 @@ const updateProject = async (project, projectId) => {
       DT: "",
     };
   } catch (error) {
-    console.log(">>> check error:", error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,

@@ -2,7 +2,6 @@ import ProjectService from "../service/ProjectService";
 
 const getProjectById = async (req, res) => {
   try {
-    console.log(">>> check req.params", +req.query.projectId);
     const project = await ProjectService.getProjectById(+req.query.projectId);
     return res.status(200).json({
       EM: project.EM,
@@ -31,7 +30,6 @@ const getAllProjects = async (req, res) => {
       });
     } else {
       const projects = await ProjectService.getProjectList();
-      console.log(">>>> check projects:", projects);
       return res.status(200).json({
         EM: projects.EM,
         EC: projects.EC,
@@ -83,9 +81,6 @@ const handleDeleteProject = async (req, res) => {
 
 const putUpdateProject = async (req, res) => {
   try {
-    console.log(">>> check req.body:", req.body);
-    console.log(">>> check req.params:", req.params);
-    console.log(">>> req.query", req.query);
     let updateInfo = await ProjectService.updateProject(
       req.body,
       req.params.id
