@@ -1,5 +1,5 @@
 import db from "../models/index";
-
+import { Sequelize } from "sequelize";
 const getAnnouncementList = async () => {
   console.log("im");
   try {
@@ -29,7 +29,7 @@ const getAnnouncementList = async () => {
   }
 };
 
-const getAnnouncementPagination = async (page, limit) => {
+const getAnnouncementPagination = async (page, limit, serach = "") => {
   try {
     let offset = (page - 1) * limit;
     const { count, rows } = await db.Announcement.findAndCountAll({
@@ -41,11 +41,20 @@ const getAnnouncementPagination = async (page, limit) => {
         "dateUpdated",
         "isPublic",
       ],
+      where: {
+        title: Sequelize.where(
+          Sequelize.fn("LOWER", Sequelize.col("title")),
+          "LIKE",
+          "%" + serach + "%"
+        ),
+      },
       raw: true,
       nest: true,
       offset: offset,
       limit: limit,
     });
+
+    console.log(">>>", serach);
 
     let totalPage = Math.ceil(count / limit);
     let data = {
@@ -60,8 +69,9 @@ const getAnnouncementPagination = async (page, limit) => {
       DT: data,
     };
   } catch (error) {
+    console.log(error);
     return {
-      EM: "There are something wrong in the server's services",
+      EM: "There is something wrong in the server's services",
       EC: -1,
       DT: "",
     };
