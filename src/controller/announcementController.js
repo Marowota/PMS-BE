@@ -50,4 +50,26 @@ const postCreateAnnouncement = async (req, res) => {
   }
 };
 
-module.exports = { getAllAnnouncement, postCreateAnnouncement };
+const handleDeleteAnnouncement = async (req, res) => {
+  try {
+    console.log(">>> req.body", req.body);
+    let deleteInfo = await AnnouncementService.deleteAnnouncement(req.body.ids);
+    return res.status(200).json({
+      EM: deleteInfo.EM,
+      EC: deleteInfo.EC,
+      DT: deleteInfo.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
+module.exports = {
+  getAllAnnouncement,
+  postCreateAnnouncement,
+  handleDeleteAnnouncement,
+};

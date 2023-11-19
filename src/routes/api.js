@@ -19,6 +19,10 @@ const initApiRoutes = (app) => {
     "/announcement/create",
     announcementController.postCreateAnnouncement
   );
+  router.delete(
+    "/announcement/delete",
+    announcementController.handleDeleteAnnouncement
+  );
 
   return app.use("/api/v1", router);
 };
