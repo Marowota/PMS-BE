@@ -93,8 +93,31 @@ const createAnnouncement = async (rawData) => {
   }
 };
 
+const deleteAnnouncement = async (announcementIds) => {
+  try {
+    console.log(">>> check projectIds", announcementIds);
+    await db.Announcement.destroy({
+      where: {
+        id: announcementIds,
+      },
+    });
+    return {
+      EM: "Delete Announcement successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getAnnouncementList,
   getAnnouncementPagination,
   createAnnouncement,
+  deleteAnnouncement,
 };
