@@ -17,9 +17,17 @@ const initApiRoutes = (app) => {
 
   //announcement
   router.get("/announcement/read", announcementController.getAllAnnouncement);
+  router.get(
+    "/announcement/readById",
+    announcementController.getAnnouncementById
+  );
   router.post(
     "/announcement/create",
     announcementController.postCreateAnnouncement
+  );
+  router.put(
+    "/announcement/update/:id",
+    announcementController.putUpdateAnnouncement
   );
   router.delete(
     "/announcement/delete",

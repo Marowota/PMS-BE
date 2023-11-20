@@ -38,6 +38,25 @@ const getAllAnnouncement = async (req, res) => {
   }
 };
 
+const getAnnouncementById = async (req, res) => {
+  try {
+    const announcement = await AnnouncementService.getAnnouncementById(
+      +req.query.id
+    );
+    return res.status(200).json({
+      EM: announcement.EM,
+      EC: announcement.EC,
+      DT: announcement.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 const postCreateAnnouncement = async (req, res) => {
   try {
     let announcementData = await AnnouncementService.createAnnouncement(
@@ -47,6 +66,26 @@ const postCreateAnnouncement = async (req, res) => {
       EM: announcementData.EM,
       EC: announcementData.EC,
       DT: announcementData.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
+const putUpdateAnnouncement = async (req, res) => {
+  try {
+    let updateInfo = await AnnouncementService.updateAnnouncement(
+      req.body,
+      req.params.id
+    );
+    return res.status(200).json({
+      EM: updateInfo.EM,
+      EC: updateInfo.EC,
+      DT: updateInfo.DT,
     });
   } catch (error) {
     return res.status(500).json({
@@ -79,4 +118,6 @@ module.exports = {
   getAllAnnouncement,
   postCreateAnnouncement,
   handleDeleteAnnouncement,
+  getAnnouncementById,
+  putUpdateAnnouncement,
 };

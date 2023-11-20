@@ -3,7 +3,7 @@ import { Sequelize } from "sequelize";
 const getAnnouncementList = async () => {
   console.log("im");
   try {
-    let projectList = await db.Announcement.findAll({
+    let announcementList = await db.Announcement.findAll({
       attributes: [
         "id",
         "title",
@@ -18,9 +18,40 @@ const getAnnouncementList = async () => {
     return {
       EM: "Success",
       EC: 0,
-      DT: projectList,
+      DT: announcementList,
     };
   } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
+const getAnnouncementById = async (id) => {
+  try {
+    let announcement = await db.Announcement.findOne({
+      where: { id: id },
+      attributes: [
+        "id",
+        "title",
+        "content",
+        "dateCreated",
+        "dateUpdated",
+        "isPublic",
+      ],
+      raw: true,
+      nest: true,
+    });
+
+    return {
+      EM: "Success",
+      EC: 0,
+      DT: announcement,
+    };
+  } catch (error) {
+    console.log(">>> ", error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,
@@ -100,9 +131,37 @@ const createAnnouncement = async (rawData) => {
   }
 };
 
+const updateAnnouncement = async (announcement, announcementId) => {
+  try {
+    const Announcement = await db.Announcement.findOne({
+      where: { id: announcementId },
+    });
+    const currentTime = new Date();
+    if (Announcement) {
+      await Announcement.update({
+        title: announcement.title,
+        content: announcement.content,
+        isPublic: announcement.isPublic,
+        dateUpdated: currentTime,
+      });
+    }
+    return {
+      EM: "Update announcement successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 const deleteAnnouncement = async (announcementIds) => {
   try {
-    console.log(">>> check projectIds", announcementIds);
+    console.log(">>> check announcement Ids", announcementIds);
     await db.Announcement.destroy({
       where: {
         id: announcementIds,
@@ -127,4 +186,6 @@ module.exports = {
   getAnnouncementPagination,
   createAnnouncement,
   deleteAnnouncement,
+  getAnnouncementById,
+  updateAnnouncement,
 };
