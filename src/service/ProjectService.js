@@ -1,5 +1,6 @@
 import db from "../models/index";
 import { Op } from "sequelize";
+import { Sequelize } from "sequelize";
 
 const getProjectById = async (projectId) => {
   try {
@@ -64,7 +65,7 @@ const getProjectList = async () => {
   }
 };
 
-const getProjectWithPagination = async (page, limit) => {
+const getProjectWithPagination = async (page, limit, search = "") => {
   try {
     let offset = (page - 1) * limit;
     const { count, rows } = await db.Project.findAndCountAll({
@@ -77,6 +78,13 @@ const getProjectWithPagination = async (page, limit) => {
           required: true,
           attributes: ["name", "email", "phone"],
         },
+      },
+      where: {
+        [db.Sequelize.col("Project.name")]: Sequelize.where(
+          Sequelize.fn("LOWER", Sequelize.col("Project.name")),
+          "LIKE",
+          "%" + search + "%"
+        ),
       },
       attributes: ["id", "name", "type", "faculty"],
       raw: true,
@@ -98,6 +106,7 @@ const getProjectWithPagination = async (page, limit) => {
       DT: data,
     };
   } catch (error) {
+    console.log(">>> error", error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,

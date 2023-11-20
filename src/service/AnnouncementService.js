@@ -29,7 +29,7 @@ const getAnnouncementList = async () => {
   }
 };
 
-const getAnnouncementPagination = async (page, limit, serach = "") => {
+const getAnnouncementPagination = async (page, limit, search = "") => {
   try {
     let offset = (page - 1) * limit;
     const { count, rows } = await db.Announcement.findAndCountAll({
@@ -45,7 +45,7 @@ const getAnnouncementPagination = async (page, limit, serach = "") => {
         title: Sequelize.where(
           Sequelize.fn("LOWER", Sequelize.col("title")),
           "LIKE",
-          "%" + serach + "%"
+          "%" + search + "%"
         ),
       },
       raw: true,
@@ -53,8 +53,6 @@ const getAnnouncementPagination = async (page, limit, serach = "") => {
       offset: offset,
       limit: limit,
     });
-
-    console.log(">>>", serach);
 
     let totalPage = Math.ceil(count / limit);
     let data = {
@@ -69,7 +67,6 @@ const getAnnouncementPagination = async (page, limit, serach = "") => {
       DT: data,
     };
   } catch (error) {
-    console.log(error);
     return {
       EM: "There is something wrong in the server's services",
       EC: -1,

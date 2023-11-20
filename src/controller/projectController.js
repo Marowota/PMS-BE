@@ -22,7 +22,17 @@ const getAllProjects = async (req, res) => {
     if (req.query.page && req.query.limit) {
       let page = parseInt(req.query.page);
       let limit = parseInt(req.query.limit);
-      let data = await ProjectService.getProjectWithPagination(page, limit);
+      let data;
+      if (req.query.search) {
+        let search = req.query.search;
+        data = await ProjectService.getProjectWithPagination(
+          page,
+          limit,
+          search
+        );
+      } else {
+        data = await ProjectService.getProjectWithPagination(page, limit);
+      }
       return res.status(200).json({
         EM: data.EM,
         EC: data.EC,
