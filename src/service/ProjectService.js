@@ -16,7 +16,14 @@ const getProjectById = async (projectId) => {
           attributes: ["name", "email", "phone"],
         },
       },
-      attributes: ["id", "name", "type", "faculty", "requirement"],
+      attributes: [
+        "id",
+        "name",
+        "type",
+        "faculty",
+        "requirement",
+        "isregistered",
+      ],
       raw: true,
       nest: true,
     });
@@ -47,7 +54,14 @@ const getProjectList = async () => {
           attributes: ["name", "email", "phone"],
         },
       },
-      attributes: ["id", "name", "type", "faculty", "requirement"],
+      attributes: [
+        "id",
+        "name",
+        "type",
+        "faculty",
+        "requirement",
+        "isregistered",
+      ],
       raw: true,
       nest: true,
     });
@@ -86,7 +100,14 @@ const getProjectWithPagination = async (page, limit, search = "") => {
           "%" + search + "%"
         ),
       },
-      attributes: ["id", "name", "type", "faculty"],
+      attributes: [
+        "id",
+        "name",
+        "type",
+        "faculty",
+        "requirement",
+        "isregistered",
+      ],
       raw: true,
       nest: true,
       offset: offset,
@@ -185,9 +206,11 @@ const deleteProject = async (projectIds) => {
 
 const updateProject = async (project, projectId) => {
   try {
-    const user = await db.Project.findOne({ where: { id: projectId } });
-    if (user) {
-      await user.update({
+    const data = await db.Project.findOne({
+      where: { id: projectId },
+    });
+    if (data) {
+      await data.update({
         name: project.projectName,
         requirement: project.projectRequirement,
         type: project.projectType,
