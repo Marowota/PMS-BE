@@ -1,7 +1,6 @@
 import db from "../models/index";
 import { Sequelize } from "sequelize";
 const getAnnouncementList = async () => {
-  console.log("im");
   try {
     let announcementList = await db.Announcement.findAll({
       attributes: [
@@ -51,7 +50,6 @@ const getAnnouncementById = async (id) => {
       DT: announcement,
     };
   } catch (error) {
-    console.log(">>> ", error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,
@@ -161,7 +159,6 @@ const updateAnnouncement = async (announcement, announcementId) => {
 
 const deleteAnnouncement = async (announcementIds) => {
   try {
-    console.log(">>> check announcement Ids", announcementIds);
     await db.Announcement.destroy({
       where: {
         id: announcementIds,
