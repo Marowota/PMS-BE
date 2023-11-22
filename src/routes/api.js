@@ -2,6 +2,7 @@ import express from "express";
 import projectController from "../controller/projectController";
 import teacherController from "../controller/teacherController";
 import announcementController from "../controller/announcementController";
+import scoreController from "../controller/scoreController";
 const router = express.Router();
 
 const initApiRoutes = (app) => {
@@ -33,6 +34,13 @@ const initApiRoutes = (app) => {
     "/announcement/delete",
     announcementController.handleDeleteAnnouncement
   );
+
+  //score
+  router.get("/score/read", scoreController.getAllScore);
+  router.get("/score/readById", scoreController.getScoreById);
+  //router.post("/score/create", scoreController.postCreateScore);
+  router.put("/score/update/:id", scoreController.putUpdateScore);
+  //router.delete("/score/delete", scoreController.handleDeleteScore);
 
   return app.use("/api/v1", router);
 };
