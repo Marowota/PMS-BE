@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       teacherID: DataTypes.INTEGER,
-      requirement: DataTypes.STRING,
+      requirement: DataTypes.TEXT,
       maxStudentNumber: DataTypes.INTEGER,
       type: DataTypes.STRING,
       faculty: DataTypes.STRING,

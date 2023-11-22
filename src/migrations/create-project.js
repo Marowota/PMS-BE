@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       requirement: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
       },
       maxStudentNumber: {
         type: Sequelize.INTEGER,
