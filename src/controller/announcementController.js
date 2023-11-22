@@ -98,7 +98,6 @@ const putUpdateAnnouncement = async (req, res) => {
 
 const handleDeleteAnnouncement = async (req, res) => {
   try {
-    console.log(">>> req.body", req.body);
     let deleteInfo = await AnnouncementService.deleteAnnouncement(req.body.ids);
     return res.status(200).json({
       EM: deleteInfo.EM,
