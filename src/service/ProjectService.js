@@ -127,7 +127,6 @@ const getProjectWithPagination = async (page, limit, search = "") => {
       DT: data,
     };
   } catch (error) {
-    console.log(">>> error", error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,

@@ -134,9 +134,20 @@ const getScorePagination = async (page, limit, search = "") => {
         },
       ],
       where: {
-        [Op.or]: [
-          { student1ID: { [Op.ne]: null } },
-          { student2ID: { [Op.ne]: null } },
+        [Op.and]: [
+          {
+            name: Sequelize.where(
+              Sequelize.fn("LOWER", Sequelize.col("Project.name")),
+              "LIKE",
+              "%" + search + "%"
+            ),
+          },
+          {
+            [Op.or]: [
+              { student1ID: { [Op.ne]: null } },
+              { student2ID: { [Op.ne]: null } },
+            ],
+          },
         ],
       },
       attributes: ["id", "score", "isCompleted"],
@@ -146,7 +157,6 @@ const getScorePagination = async (page, limit, search = "") => {
       limit: limit,
     });
 
-    console.log("rows", rows);
     let totalPage = Math.ceil(count / limit);
     let data = {
       totalRows: count,
@@ -160,7 +170,6 @@ const getScorePagination = async (page, limit, search = "") => {
       DT: data,
     };
   } catch (error) {
-    console.log(">> error", error);
     return {
       EM: "There is something wrong in the server's services",
       EC: -1,

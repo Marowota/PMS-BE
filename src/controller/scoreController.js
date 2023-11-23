@@ -12,7 +12,6 @@ const getAllScore = async (req, res) => {
       } else {
         data = await ScoreService.getScorePagination(page, limit);
       }
-      console.log(">>>", data);
       return res.status(200).json({
         EM: data.EM,
         EC: data.EC,
@@ -20,7 +19,6 @@ const getAllScore = async (req, res) => {
       });
     } else {
       const score = await ScoreService.getScoreList();
-      console.log(">>>", score);
       return res.status(200).json({
         EM: score.EM,
         EC: score.EC,
