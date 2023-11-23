@@ -4,7 +4,13 @@ const configCors = (app) => {
   // Add headers before the routes are defined
   app.use(function (req, res, next) {
     // Website you wish to allow to connect
-    res.setHeader("Access-Control-Allow-Origin", process.env.REACT_URL);
+    const allowedOrigins = [process.env.REACT_URL, process.env.TEST_URL];
+    const origin = req.headers.origin;
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader("Access-Control-Allow-Origin", origin);
+    }
+
+    //res.setHeader("Access-Control-Allow-Origin", process.env.REACT_URL);
     //res.setHeader("Access-Control-Allow-Origin", process.env.TEST_URL);
 
     // Request methods you wish to allow
