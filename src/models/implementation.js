@@ -9,13 +9,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Implementation.belongsTo(models.Student, { foreignKey: "studentID" });
+      Implementation.belongsTo(models.Student, {
+        as: "Student1",
+        foreignKey: "student1ID",
+      });
+      Implementation.belongsTo(models.Student, {
+        as: "Student2",
+        foreignKey: "student2ID",
+      });
       Implementation.belongsTo(models.Project, { foreignKey: "projectID" });
     }
   }
   Implementation.init(
     {
-      studentID: DataTypes.INTEGER,
+      student1ID: DataTypes.INTEGER,
+      student2ID: DataTypes.INTEGER,
       projectID: DataTypes.INTEGER,
       score: DataTypes.INTEGER,
       isCompleted: DataTypes.BOOLEAN,

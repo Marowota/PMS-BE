@@ -1,5 +1,5 @@
 import db from "../models/index";
-import { Sequelize } from "sequelize";
+import { Sequelize, Op } from "sequelize";
 const getScoreList = async () => {
   console.log("im");
   try {
@@ -7,6 +7,18 @@ const getScoreList = async () => {
       include: [
         {
           model: db.Student,
+          as: "Student1",
+          required: true,
+          include: {
+            model: db.User,
+            required: true,
+            attributes: ["name"],
+          },
+          attributes: ["studentCode"],
+        },
+        {
+          model: db.Student,
+          as: "Student2",
           required: true,
           include: {
             model: db.User,
@@ -81,7 +93,17 @@ const getScorePagination = async (page, limit, search = "") => {
       include: [
         {
           model: db.Student,
-          required: true,
+          as: "Student1",
+          include: {
+            model: db.User,
+            required: true,
+            attributes: ["name"],
+          },
+          attributes: ["studentCode"],
+        },
+        {
+          model: db.Student,
+          as: "Student2",
           include: {
             model: db.User,
             required: true,
@@ -111,6 +133,12 @@ const getScorePagination = async (page, limit, search = "") => {
           attributes: ["name", "type", "faculty"],
         },
       ],
+      where: {
+        [Op.or]: [
+          { student1ID: { [Op.ne]: null } },
+          { student2ID: { [Op.ne]: null } },
+        ],
+      },
       attributes: ["id", "score", "isCompleted"],
       raw: true,
       nest: true,

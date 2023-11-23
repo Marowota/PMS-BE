@@ -9,7 +9,7 @@ module.exports = {
     // Config
     const faker = fakerVI;
     const numberOfAA = 5;
-    const numberOfStudent = 50;
+    const numberOfStudent = 75;
     const numberOfTeacher = 10;
     const numberOfUser = numberOfAA + numberOfStudent + numberOfTeacher;
     const numberOfAccount = numberOfUser;
@@ -322,14 +322,21 @@ module.exports = {
 
     let implementationList = Array(numberOfImplementation)
       .fill({
-        studentID: null,
+        student1ID: null,
+        student2ID: null,
         projectID: null,
         score: null,
         isCompleted: null,
       })
       .map(() => {
         return {
-          studentID: getRandUniqSomethingID(
+          student1ID: getRandUniqSomethingID(
+            impStudentInDb,
+            ueStudentId,
+            numberOfStudent,
+            true
+          ),
+          student2ID: getRandUniqSomethingID(
             impStudentInDb,
             ueStudentId,
             numberOfStudent,
