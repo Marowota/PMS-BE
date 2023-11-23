@@ -108,7 +108,7 @@ const getScorePagination = async (page, limit, search = "") => {
               "%" + search + "%"
             ),
           },
-          attributes: ["name", "type"],
+          attributes: ["name", "type", "faculty"],
         },
       ],
       attributes: ["id", "score", "isCompleted"],
