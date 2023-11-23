@@ -347,7 +347,7 @@ module.exports = {
             ueProjectId,
             numberOfProject
           ),
-          score: faker.number.int({ min: 0, max: 10 }),
+          score: faker.number.float({ min: 0, max: 10, precision: 0.01 }),
           isCompleted: faker.datatype.boolean(0.25),
         };
       });

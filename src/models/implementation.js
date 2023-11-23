@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       student1ID: DataTypes.INTEGER,
       student2ID: DataTypes.INTEGER,
       projectID: DataTypes.INTEGER,
-      score: DataTypes.INTEGER,
+      score: DataTypes.FLOAT,
       isCompleted: DataTypes.BOOLEAN,
     },
     {

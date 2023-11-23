@@ -19,7 +19,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       score: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       isCompleted: {
         type: Sequelize.BOOLEAN,
