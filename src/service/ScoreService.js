@@ -77,7 +77,6 @@ const getScoreById = async (id) => {
       DT: score,
     };
   } catch (error) {
-    console.log(">>> ", error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,

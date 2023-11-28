@@ -3,6 +3,7 @@ import projectController from "../controller/projectController";
 import teacherController from "../controller/teacherController";
 import announcementController from "../controller/announcementController";
 import scoreController from "../controller/scoreController";
+import analysisController from "../controller/analysisController";
 const router = express.Router();
 
 const initApiRoutes = (app) => {
@@ -41,6 +42,22 @@ const initApiRoutes = (app) => {
   //router.post("/score/create", scoreController.postCreateScore);
   router.put("/score/update/:id", scoreController.putUpdateScore);
   //router.delete("/score/delete", scoreController.handleDeleteScore);
+
+  //analysis
+  router.get(
+    "/analysis/readStudentAndProject",
+    analysisController.getProjectjAndStudent
+  );
+  router.get("/analysis/readMostProject", analysisController.getTheMostProject);
+  router.get("/analysis/readMostStudent", analysisController.getTheMostStudent);
+  router.get(
+    "/analysis/readProjectStatus",
+    analysisController.getProjectRegisterStatus
+  );
+  router.get(
+    "/analysis/readMostRegisteredTeacher",
+    analysisController.getTheMostRegisteredTeacher
+  );
 
   return app.use("/api/v1", router);
 };
