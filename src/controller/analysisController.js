@@ -85,10 +85,46 @@ const getTheMostRegisteredTeacher = async (req, res) => {
   }
 };
 
+const getTeacherAverageScore = async (req, res) => {
+  try {
+    const data = await analysisService.teacherAverageScore();
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
+const getHighestAverageScore = async (req, res) => {
+  try {
+    const data = await analysisService.highestAverageScore();
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 module.exports = {
   getProjectjAndStudent,
   getTheMostProject,
   getTheMostStudent,
   getProjectRegisterStatus,
   getTheMostRegisteredTeacher,
+  getTeacherAverageScore,
+  getHighestAverageScore,
 };

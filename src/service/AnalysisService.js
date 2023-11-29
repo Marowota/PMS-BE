@@ -327,10 +327,148 @@ const getTeacherWithMostProjectsRegistered = async () => {
   }
 };
 
+const teacherAverageScore = async () => {
+  try {
+    // CODE CHECK PROJECT ID
+
+    // const teachers = await db.Implementation.findAll({
+    //   attributes: [
+    //     "projectID",
+    //     [db.Sequelize.fn("AVG", db.Sequelize.col("score")), "averageScore"],
+    //     [db.Sequelize.col("Project->Teacher->User.name"), "teacherName"],
+    //   ],
+    //   include: [
+    //     {
+    //       model: db.Project,
+    //       attributes: [],
+    //       include: {
+    //         model: db.Teacher,
+    //         attributes: [],
+    //         include: {
+    //           model: db.User,
+    //           attributes: [],
+    //         },
+    //       },
+    //     },
+    //   ],
+    //   group: ["projectID", db.Sequelize.col("Project->Teacher->User.name")],
+    //   raw: true,
+    // });
+
+    const teachers = await db.Implementation.findAll({
+      attributes: [
+        [db.Sequelize.col("Project.Teacher.User.name"), "Teacher's name"],
+        [db.Sequelize.literal(`ROUND(AVG(score), 1)`), "Average score"],
+      ],
+      include: [
+        {
+          model: db.Project,
+          attributes: [],
+          include: {
+            model: db.Teacher,
+            attributes: [],
+            include: {
+              model: db.User,
+              attributes: [],
+            },
+          },
+        },
+      ],
+      group: ["Project.Teacher.userID"],
+      raw: true,
+    });
+
+    // CODE CHECK TEACHER ID
+
+    // const teachers = await db.Implementation.findAll({
+    //   attributes: [
+    //     [db.Sequelize.fn("AVG", db.Sequelize.col("score")), "averageScore"],
+    //   ],
+    //   include: [
+    //     {
+    //       model: db.Project,
+    //       attributes: [],
+    //       include: {
+    //         model: db.Teacher,
+    //         attributes: [],
+    //         include: {
+    //           model: db.User,
+    //           attributes: ["name"],
+    //         },
+    //       },
+    //     },
+    //   ],
+    //   group: ["Project.Teacher.userID", "Project.Teacher.User.name"],
+    //   raw: true,
+    // });
+
+    return {
+      EM: "Success",
+      EC: 0,
+      DT: teachers,
+    };
+  } catch (error) {
+    console.log(">>> error: ", error);
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
+const highestAverageScore = async () => {
+  try {
+    // Find the teacher with the highest average score
+    const teacher = await db.Implementation.findOne({
+      attributes: [
+        [db.Sequelize.col("Project.Teacher.User.name"), "teacherName"],
+        [db.Sequelize.literal(`ROUND(AVG(score), 1)`), "averageScore"],
+      ],
+      include: [
+        {
+          model: db.Project,
+          attributes: [],
+          include: {
+            model: db.Teacher,
+            attributes: [],
+            include: {
+              model: db.User,
+              attributes: [],
+            },
+          },
+        },
+      ],
+      group: [
+        "Project.Teacher.userID",
+        db.Sequelize.col("Project.Teacher.User.name"),
+      ],
+      order: [[db.Sequelize.literal("averageScore"), "DESC"]],
+      limit: 1,
+      raw: true,
+    });
+
+    return {
+      EM: "Success",
+      EC: 0,
+      DT: teacher,
+    };
+  } catch (error) {
+    console.log(">>> error: ", error);
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getProjectjAndStudentByTeacher,
   getTeacherWithMostProjects,
   getTeacherWithMostStudents,
   getProjectRegisterStatus,
   getTeacherWithMostProjectsRegistered,
+  teacherAverageScore,
+  highestAverageScore,
 };
