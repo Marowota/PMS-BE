@@ -16,6 +16,8 @@ npx sequelize-cli model:generate --name Project --attributes name:string,teacher
 
 npx sequelize-cli model:generate --name Implementation --attributes studentID:integer,projectID:integer,score:integer,status:string
 
+npx sequelize-cli model:generate --name JWTData --attributes refreshToken:string
+
 
 #run this after all
 npx sequelize-cli db:migrate

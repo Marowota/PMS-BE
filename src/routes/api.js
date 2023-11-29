@@ -4,13 +4,16 @@ import teacherController from "../controller/teacherController";
 import announcementController from "../controller/announcementController";
 import scoreController from "../controller/scoreController";
 import authController from "../controller/authController";
+import authenticationController from "../controller/authenticationController";
 import analysisController from "../controller/analysisController";
 const router = express.Router();
 
 const initApiRoutes = (app) => {
   // authentication
   router.post("/register", authController.register);
-  router.post("/login", authController.login3);
+  router.post("/login", authenticationController.login);
+  router.post("/token", authenticationController.getToken);
+  router.delete("/logout", authenticationController.logout);
   router.post("/posts", authController.authenticateToken, authController.post2);
   //router.post("/posts", authController.verifyToken, authController.posts);
 

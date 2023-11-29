@@ -3,7 +3,7 @@ require("dotenv").config();
 import AuthenticationService from "../service/AuthenticationService";
 
 const generateAccessToken = (user) => {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "7d" });
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "12h" });
 };
 
 const login = async (req, res) => {
@@ -16,13 +16,15 @@ const login = async (req, res) => {
       const user = { id: avResult.id };
       const accessToken = generateAccessToken(user);
       const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET);
+      AuthenticationService.InsertRefreshToken(refreshToken);
+
       const token = { accessToken: accessToken, refreshToken: refreshToken };
-      res.status(200).json({
-        EM: "Log in successfully",
+      return res.status(200).json({
+        EM: "Login successfully",
         EC: 0,
         DT: token,
       });
-    } else return avResult;
+    } else return res.status(401).json(avResult);
   } catch (error) {
     return res.status(500).json({
       EM: "Internal Server Error",
@@ -30,4 +32,63 @@ const login = async (req, res) => {
       DT: "",
     });
   }
+};
+
+const getToken = async (req, res) => {
+  const refreshToken = req.body.refreshToken;
+  if (refreshToken == null)
+    return res.status(401).json({
+      EM: "Please login",
+      EC: -4,
+      DT: "",
+    });
+  const tokenQuery = await AuthenticationService.RefreshTokenVerification(
+    refreshToken
+  );
+  if (tokenQuery.EC != 0)
+    return res.status(403).json({
+      EM: "Please login again",
+      EC: -5,
+      DT: "",
+    });
+
+  jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+    if (err)
+      return res.status(403).json({
+        EM: "Please login again",
+        EC: -6,
+        DT: "",
+      });
+    const accessToken = generateAccessToken({ username: user.username });
+    return res.status(200).json({
+      EM: "",
+      EC: 0,
+      DT: { accessToken: accessToken },
+    });
+  });
+};
+
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
+  if (token == null) return res.sendStatus(401);
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    if (err) {
+      return res.sendStatus(403);
+    }
+    req.user = user;
+    next();
+  });
+}
+
+const logout = async (req, res) => {
+  await AuthenticationService.RemoveRefreshToken(req.body.refreshToken);
+  return res.sendStatus(204);
+};
+
+module.exports = {
+  login,
+  getToken,
+  logout,
+  authenticateToken,
 };
