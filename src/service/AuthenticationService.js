@@ -5,8 +5,9 @@ const AccountVerification = async (username = "", password = "") => {
     let result = await db.Account.findOne({
       attributes: ["id"],
       where: { username: username, password: password },
+      raw: true,
+      nest: true,
     });
-    console.log(result);
     if (result === null) {
       return {
         EM: "Username or password is incorrect",
@@ -29,6 +30,7 @@ const AccountVerification = async (username = "", password = "") => {
 };
 
 const InsertRefreshToken = async (refreshToken = "") => {
+  console.log(">>> inserting", refreshToken);
   try {
     await db.JWTData.create({
       refreshToken: refreshToken,
@@ -51,7 +53,10 @@ const RefreshTokenVerification = async (refreshToken = "") => {
   try {
     let result = await db.JWTData.findOne({
       where: { refreshToken: refreshToken },
+      raw: true,
+      nest: true,
     });
+    console.log(result);
     if (result === null) {
       return {
         EM: "Refresh Token not exist",
@@ -74,6 +79,7 @@ const RefreshTokenVerification = async (refreshToken = "") => {
 };
 
 const RemoveRefreshToken = async (refreshToken = "") => {
+  console.log(">>> removing", refreshToken);
   try {
     await db.JWTData.destroy({
       where: { refreshToken: refreshToken },
