@@ -15,7 +15,7 @@ const getAnnouncementList = async () => {
       nest: true,
     });
     return {
-      EM: "Success",
+      EM: "Get announcement list successfully",
       EC: 0,
       DT: announcementList,
     };
@@ -29,32 +29,48 @@ const getAnnouncementList = async () => {
 };
 
 const getAnnouncementById = async (id) => {
-  try {
-    let announcement = await db.Announcement.findOne({
-      where: { id: id },
-      attributes: [
-        "id",
-        "title",
-        "content",
-        "dateCreated",
-        "dateUpdated",
-        "isPublic",
-      ],
-      raw: true,
-      nest: true,
-    });
-
+  if (typeof id !== "number")
     return {
-      EM: "Success",
-      EC: 0,
-      DT: announcement,
-    };
-  } catch (error) {
-    return {
-      EM: "There are something wrong in the server's services",
-      EC: -1,
+      EM: "Invalid announcement id",
+      EC: 1,
       DT: "",
     };
+  else {
+    try {
+      let announcement = await db.Announcement.findOne({
+        where: { id: id },
+        attributes: [
+          "id",
+          "title",
+          "content",
+          "dateCreated",
+          "dateUpdated",
+          "isPublic",
+        ],
+        raw: true,
+        nest: true,
+      });
+
+      if (announcement === null) {
+        return {
+          EM: "Announcement not found",
+          EC: 4,
+          DT: null,
+        };
+      } else {
+        return {
+          EM: "Get announcement by id successfully",
+          EC: 0,
+          DT: announcement,
+        };
+      }
+    } catch (error) {
+      return {
+        EM: "There are something wrong in the server's services",
+        EC: -1,
+        DT: "",
+      };
+    }
   }
 };
 
@@ -91,7 +107,7 @@ const getAnnouncementPagination = async (page, limit, search = "") => {
     };
 
     return {
-      EM: "Get data successfully",
+      EM: "Get announcement pagination successfully",
       EC: 0,
       DT: data,
     };
@@ -105,78 +121,179 @@ const getAnnouncementPagination = async (page, limit, search = "") => {
 };
 
 const createAnnouncement = async (rawData) => {
-  try {
-    const currentTime = new Date();
-    await db.Announcement.create({
-      title: rawData.title,
-      content: rawData.content,
-      isPublic: rawData.isPublic,
-      dateCreated: currentTime,
-      dateUpdated: currentTime,
-    });
+  if (
+    typeof rawData === "undefined" ||
+    typeof rawData.title === "undefined" ||
+    typeof rawData.content === "undefined" ||
+    typeof rawData.isPublic === "undefined" ||
+    rawData.title === "" ||
+    rawData.content === "" ||
+    rawData.isPublic === ""
+  )
+    return {
+      EM: "Announcement information must not be empty",
+      EC: 2,
+      DT: "",
+    };
+  else if (
+    typeof rawData !== "object" ||
+    typeof rawData.title !== "string" ||
+    typeof rawData.content !== "string" ||
+    typeof rawData.isPublic !== "boolean"
+  )
+    return {
+      EM: "Announcement information is invalid",
+      EC: 3,
+      DT: "",
+    };
+  else {
+    try {
+      const currentTime = new Date();
+      await db.Announcement.create({
+        title: rawData.title,
+        content: rawData.content,
+        isPublic: rawData.isPublic,
+        dateCreated: currentTime,
+        dateUpdated: currentTime,
+      });
 
-    return {
-      EM: "New announcement created successfully",
-      EC: 0,
-      DT: "",
-    };
-  } catch (error) {
-    return {
-      EM: "There are something wrong in the server's services",
-      EC: -1,
-      DT: "",
-    };
+      return {
+        EM: "New announcement created successfully",
+        EC: 0,
+        DT: "",
+      };
+    } catch (error) {
+      return {
+        EM: "There are something wrong in the server's services",
+        EC: -1,
+        DT: "",
+      };
+    }
   }
 };
 
 const updateAnnouncement = async (announcement, announcementId) => {
-  try {
-    const Announcement = await db.Announcement.findOne({
-      where: { id: announcementId },
-    });
-    const currentTime = new Date();
-    if (Announcement) {
-      await Announcement.update({
-        title: announcement.title,
-        content: announcement.content,
-        isPublic: announcement.isPublic,
-        dateUpdated: currentTime,
+  if (
+    typeof announcement === "undefined" ||
+    typeof announcement.title === "undefined" ||
+    typeof announcement.content === "undefined" ||
+    typeof announcement.isPublic === "undefined" ||
+    announcement.title === "" ||
+    announcement.content === "" ||
+    announcement.isPublic === ""
+  )
+    return {
+      EM: "Announcement information must not be empty",
+      EC: 2,
+      DT: "",
+    };
+  else if (
+    typeof announcement !== "object" ||
+    typeof announcement.title !== "string" ||
+    typeof announcement.content !== "string" ||
+    typeof announcement.isPublic !== "boolean"
+  )
+    return {
+      EM: "Announcement information is invalid",
+      EC: 3,
+      DT: "",
+    };
+  else if (typeof announcementId !== "number")
+    return {
+      EM: "Invalid announcement id",
+      EC: 1,
+      DT: "",
+    };
+  else {
+    try {
+      const Announcement = await db.Announcement.findOne({
+        where: { id: announcementId },
       });
+      const currentTime = new Date();
+      if (Announcement) {
+        await Announcement.update({
+          title: announcement.title,
+          content: announcement.content,
+          isPublic: announcement.isPublic,
+          dateUpdated: currentTime,
+        });
+
+        return {
+          EM: "Update announcement successfully",
+          EC: 0,
+          DT: "",
+        };
+      } else {
+        return {
+          EM: "Announcement not found",
+          EC: 4,
+          DT: "",
+        };
+      }
+    } catch (error) {
+      return {
+        EM: "There are something wrong in the server's services",
+        EC: -1,
+        DT: "",
+      };
     }
-    return {
-      EM: "Update announcement successfully",
-      EC: 0,
-      DT: "",
-    };
-  } catch (error) {
-    return {
-      EM: "There are something wrong in the server's services",
-      EC: -1,
-      DT: "",
-    };
   }
 };
 
-const deleteAnnouncement = async (announcementIds) => {
-  try {
-    await db.Announcement.destroy({
-      where: {
-        id: announcementIds,
-      },
+const deleteAnnouncement = async (announcementId) => {
+  if (typeof announcementId !== "number")
+    return {
+      EM: "Invalid announcement id",
+      EC: 1,
+      DT: "",
+    };
+  else {
+    const Announcement = await db.Announcement.findOne({
+      where: { id: announcementId },
     });
-    return {
-      EM: "Delete Announcement successfully",
-      EC: 0,
-      DT: "",
-    };
-  } catch (error) {
-    return {
-      EM: "There are something wrong in the server's services",
-      EC: -1,
-      DT: "",
-    };
+    if (Announcement) {
+      try {
+        await Announcement.destroy();
+        return {
+          EM: "Delete announcement successfully",
+          EC: 0,
+          DT: "",
+        };
+      } catch (error) {
+        return {
+          EM: "There are something wrong in the server's services",
+          EC: -1,
+          DT: "",
+        };
+      }
+    } else {
+      return {
+        EM: "Announcement not found",
+        EC: 4,
+        DT: "",
+      };
+    }
   }
 };
+
+// try {
+//   await db.Announcement.destroy({
+//     where: {
+//       id: announcementId,
+//     },
+//   });
+//   return {
+//     EM: "Delete Announcement successfully",
+//     EC: 0,
+//     DT: "",
+//   };
+// } catch (error) {
+//   return {
+//     EM: "There are something wrong in the server's services",
+//     EC: -1,
+//     DT: "",
+//   };
+// }
 
 module.exports = {
   getAnnouncementList,
