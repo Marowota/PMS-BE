@@ -68,6 +68,14 @@ const initApiRoutes = (app) => {
     "/analysis/readMostRegisteredTeacher",
     analysisController.getTheMostRegisteredTeacher
   );
+  router.get(
+    "/analysis/readTeacherAverageScore",
+    analysisController.getTeacherAverageScore
+  );
+  router.get(
+    "/analysis/readHighestAverageScore",
+    analysisController.getHighestAverageScore
+  );
 
   return app.use("/api/v1", router);
 };
