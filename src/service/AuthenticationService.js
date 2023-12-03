@@ -79,7 +79,7 @@ const RefreshTokenVerification = async (refreshToken = "") => {
 };
 
 const RemoveRefreshToken = async (refreshToken = "") => {
-  console.log(">>> removing", refreshToken);
+  console.log(">>> removing: ", refreshToken);
   try {
     await db.JWTData.destroy({
       where: { refreshToken: refreshToken },

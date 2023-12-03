@@ -112,7 +112,6 @@ function authenticateToken(req, res, next) {
 }
 
 const logout = async (req, res) => {
-  console.log(">>> in logout");
   try {
     await AuthenticationService.RemoveRefreshToken(req.body.refreshToken);
     return res.sendStatus(204);
