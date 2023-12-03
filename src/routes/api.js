@@ -6,6 +6,7 @@ import scoreController from "../controller/scoreController";
 import authController from "../controller/authController";
 import authenticationController from "../controller/authenticationController";
 import analysisController from "../controller/analysisController";
+import authorizationController from "../controller/authorizationController";
 const router = express.Router();
 
 const initApiRoutes = (app) => {
@@ -16,6 +17,9 @@ const initApiRoutes = (app) => {
   router.delete("/logout", authenticationController.logout);
   //router.post("/posts", authController.authenticateToken, authController.post2);
   //router.post("/posts", authController.verifyToken, authController.posts);
+
+  // authorization
+  router.get("/role", authorizationController.getRole);
 
   //project
   router.get("/project/read", projectController.getAllProjects);

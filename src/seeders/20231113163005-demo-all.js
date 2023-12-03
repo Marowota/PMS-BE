@@ -11,7 +11,9 @@ module.exports = {
     const numberOfAA = 5;
     const numberOfStudent = 75;
     const numberOfTeacher = 10;
-    const numberOfUser = numberOfAA + numberOfStudent + numberOfTeacher;
+    const numberOfAdmin = 1;
+    const numberOfUser =
+      numberOfAA + numberOfStudent + numberOfTeacher + numberOfAdmin;
     const numberOfAccount = numberOfUser;
     const numberOfProject = 100;
     const numberOfImplementation = numberOfProject;
@@ -171,38 +173,10 @@ module.exports = {
 
     console.log(">> Seeded User successfully");
 
-    // Account
-
-    let accUserInDb = Array.from(userInDb[0]);
-
-    console.log(accUserInDb.length);
-    let accountList = Array(numberOfAccount)
-      .fill({
-        username: null,
-        password: null,
-        role: null,
-        status: null,
-        userID: null,
-      })
-      .map(() => {
-        let temp = getRandUniqSomethingID(accUserInDb, ueId, numberOfUser);
-        return {
-          username: faker.internet.userName(),
-          password: faker.internet.password(),
-          role: faker.helpers.arrayElement(roleList),
-          status: "",
-          userID: temp,
-        };
-      });
-
-    ueId = new UniqueEnforcer(); //reset after adding to account
-    await queryInterface.bulkInsert("Account", accountList, {});
-
-    console.log(">> Seeded Account successfully", ueId);
-
     // Academic affair
 
     let aaStuTechUserInDb = Array.from(userInDb[0]);
+    let aaUserIds = [];
 
     console.log(aaStuTechUserInDb.length);
 
@@ -213,10 +187,12 @@ module.exports = {
         userID: null,
       })
       .map(() => {
+        let uid = getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser);
+        aaUserIds.push(uid);
         return {
           academicAffairCode: getRandUniqAAID(),
           faculty: faker.helpers.arrayElement(facultyList),
-          userID: getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser),
+          userID: uid,
         };
       });
 
@@ -225,6 +201,7 @@ module.exports = {
     console.log(">> Seeded Academic Affair successfully");
 
     // Student
+    let studentUserIds = [];
 
     console.log(aaStuTechUserInDb.length);
     let studentList = Array(numberOfStudent)
@@ -236,12 +213,14 @@ module.exports = {
         userID: null,
       })
       .map(() => {
+        let uid = getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser);
+        studentUserIds.push(uid);
         return {
           studentCode: getRandUniqStudentID(),
           class: "",
           major: faker.helpers.arrayElement(majorList),
           status: faker.number.int({ min: 0, max: 2 }),
-          userID: getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser),
+          userID: uid,
         };
       });
 
@@ -255,6 +234,7 @@ module.exports = {
 
     // Teacher
 
+    let teacherUserIds = [];
     console.log(aaStuTechUserInDb.length);
     let teacherList = Array(numberOfTeacher)
       .fill({
@@ -264,11 +244,13 @@ module.exports = {
         userID: null,
       })
       .map(() => {
+        let uid = getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser);
+        teacherUserIds.push(uid);
         return {
           teacherCode: getRandUniqTeacherCode(),
           faculty: faker.helpers.arrayElement(facultyList),
           academicDegree: faker.helpers.arrayElement(academicDegreeList),
-          userID: getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser),
+          userID: uid,
         };
       });
 
@@ -279,6 +261,57 @@ module.exports = {
     );
 
     console.log(">> Seeded Techer successfully");
+
+    // Account
+
+    ueId = new UniqueEnforcer(); //reset before adding to account
+    let accUserInDb = Array.from(userInDb[0]);
+    let tempRoleList = {
+      aa: numberOfAA,
+      teacher: numberOfTeacher,
+      student: numberOfStudent,
+      admin: numberOfAdmin,
+    };
+    let allRoleUserIdList = {
+      aa: aaUserIds,
+      student: studentUserIds,
+      teacher: teacherUserIds,
+    };
+
+    console.log(accUserInDb.length);
+    let accountList = Array(numberOfAccount)
+      .fill({
+        username: null,
+        password: null,
+        role: null,
+        status: null,
+        userID: null,
+      })
+      .map(() => {
+        //let temp = getRandUniqSomethingID(accUserInDb, ueId, numberOfUser);
+        let tempRole = faker.helpers.arrayElement(Object.keys(tempRoleList));
+        let temp;
+        if (tempRole == "admin") {
+          temp = getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser);
+        } else {
+          temp = allRoleUserIdList[tempRole][tempRoleList[tempRole] - 1];
+        }
+        tempRoleList[tempRole]--;
+        if (tempRoleList[tempRole] <= 0) {
+          delete tempRoleList[tempRole];
+        }
+        return {
+          username: faker.internet.userName(),
+          password: faker.internet.password(),
+          role: tempRole,
+          status: "",
+          userID: temp,
+        };
+      });
+
+    await queryInterface.bulkInsert("Account", accountList, {});
+
+    console.log(">> Seeded Account successfully", ueId);
 
     // Project
 
