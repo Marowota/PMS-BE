@@ -13,7 +13,7 @@ const getTeacherList = async () => {
       nest: true,
     });
     return {
-      EM: "Success",
+      EM: "Get teacher list successfully",
       EC: 0,
       DT: teacherList,
     };

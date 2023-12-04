@@ -1,6 +1,5 @@
 import AnnouncementService from "../service/AnnouncementService";
 import db from "../models/index";
-import { Sequelize } from "sequelize";
 
 beforeAll(async () => {
   await db.sequelize.authenticate();
@@ -35,6 +34,7 @@ const unfilledAnnouncement = [
 
 // Test get announcement list
 describe("Test get announcement list", () => {
+  // Test success case
   it("Get announcement list successfully", async () => {
     await expect(AnnouncementService.getAnnouncementList()).resolves.toEqual({
       EM: "Get announcement list successfully",
@@ -46,6 +46,7 @@ describe("Test get announcement list", () => {
 
 // Test get announcement by ID
 describe("\nTest get announcement by ID", () => {
+  // Test success case
   it("Get announcement by ID successfully", async () => {
     await AnnouncementService.createAnnouncement({
       title: "Success title",
@@ -79,6 +80,7 @@ describe("\nTest get announcement by ID", () => {
     await AnnouncementService.deleteAnnouncement(newData[0].id);
   });
 
+  // Test not found case
   it("Announcement not found", async () => {
     await expect(
       AnnouncementService.getAnnouncementById(100000)
@@ -89,6 +91,7 @@ describe("\nTest get announcement by ID", () => {
     });
   });
 
+  // Test invalid id case
   it("Invalid announcement id", async () => {
     await expect(
       AnnouncementService.getAnnouncementById("abc")
@@ -102,6 +105,7 @@ describe("\nTest get announcement by ID", () => {
 
 // Test get announcement pagination
 describe("\nTest get announcement pagination", () => {
+  // Test success case
   it("Get announcement pagination successfully", async () => {
     await expect(
       AnnouncementService.getAnnouncementPagination(1, 10)
@@ -191,8 +195,9 @@ describe("\nTest create Announcement", () => {
   );
 });
 
-// Test delete announcement
+// Test update announcement
 describe("\nTest update Announcement", () => {
+  // Test success case
   test.each(successAnnouncement)(
     "Title: %s, Content: %s, isPublic: %s (Update announcement successfully)",
     async (title, content, isPublic) => {
@@ -236,6 +241,7 @@ describe("\nTest update Announcement", () => {
     }
   );
 
+  // Test unfilled announcement information case
   test.each(unfilledAnnouncement)(
     "Title: %s, Content: %s, isPublic: %s (Announcement information must not be empty)",
     async (title, content, isPublic) => {
@@ -279,6 +285,7 @@ describe("\nTest update Announcement", () => {
     }
   );
 
+  // Test invalid announcement information case
   test.each(invalidAnnoucement)(
     "Title: %s, Content: %s, isPublic: %s (Announcement information is invalid)",
     async (title, content, isPublic) => {
@@ -322,6 +329,7 @@ describe("\nTest update Announcement", () => {
     }
   );
 
+  // Test not found case
   it("Announcement not found", async () => {
     await expect(
       AnnouncementService.updateAnnouncement(
@@ -339,6 +347,7 @@ describe("\nTest update Announcement", () => {
     });
   });
 
+  // Test invalid id case
   it("Invalid announcement id", async () => {
     await expect(
       AnnouncementService.updateAnnouncement(
@@ -358,6 +367,7 @@ describe("\nTest update Announcement", () => {
 });
 
 describe("\nTest delete Announcement", () => {
+  // Test success case
   it("Delete announcement successfully", async () => {
     await AnnouncementService.createAnnouncement({
       title: "Test delete title",
@@ -389,6 +399,7 @@ describe("\nTest delete Announcement", () => {
     });
   });
 
+  // Test not found case
   it("Announcement not found", async () => {
     await expect(
       AnnouncementService.deleteAnnouncement(100000)
@@ -399,6 +410,7 @@ describe("\nTest delete Announcement", () => {
     });
   });
 
+  // Test invalid id case
   it("Invalid announcement id", async () => {
     await expect(
       AnnouncementService.deleteAnnouncement("abc")
