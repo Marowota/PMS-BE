@@ -27,6 +27,18 @@ module.exports = {
       faculty: {
         type: Sequelize.STRING,
       },
+      major: {
+        type: Sequelize.STRING,
+      },
+      year: {
+        type: Sequelize.STRING,
+      },
+      semester: {
+        type: Sequelize.STRING,
+      },
+      classCode: {
+        type: Sequelize.STRING,
+      },
       isPublic: {
         type: Sequelize.BOOLEAN,
       },

@@ -32,12 +32,55 @@ module.exports = {
       "An toàn Thông tin",
       "Công nghệ Thông tin",
       "Khoa học Máy tính",
+      "Trí tuệ Nhân tạo",
       "Hệ thống Thông tin",
       "Kỹ thuật Phần mềm",
       "Kỹ thuật Máy tính",
       "MMT & Truyền thông Dữ liệu",
       "Thương mai điện tử",
       "Khoa học Dữ liệu",
+    ];
+    const combineFacuMajoList = [
+      {
+        faculty: "Công nghệ Phần mềm",
+        major: "Kỹ thuật Phần mềm",
+      },
+      {
+        faculty: "Hệ thống Thông tin",
+        major: "Hệ thống Thông tin",
+      },
+      {
+        faculty: "Hệ thống Thông tin",
+        major: "Thương mai điện tử",
+      },
+      {
+        faculty: "Kỹ thuật Máy tính",
+        major: "Kỹ thuật Máy tính",
+      },
+      {
+        faculty: "MMT & Truyền thông",
+        major: "MMT & Truyền thông Dữ liệu",
+      },
+      {
+        faculty: "MMT & Truyền thông",
+        major: "An toàn Thông tin",
+      },
+      {
+        faculty: "Khoa học Máy tính",
+        major: "Khoa học Máy tính",
+      },
+      {
+        faculty: "Khoa học Máy tính",
+        major: "Trí tuệ Nhân tạo",
+      },
+      {
+        faculty: "Khoa học và Kỹ thuật Thông tin",
+        major: "Công nghệ Thông tin",
+      },
+      {
+        faculty: "Khoa học và Kỹ thuật Thông tin",
+        major: "Khoa học Dữ liệu",
+      },
     ];
     const academicDegreeList = ["CN", "KS", "ThS", "TS"];
     // Unique Enforcers
@@ -326,17 +369,26 @@ module.exports = {
         faculty: null,
         isPublic: null,
         isRegistered: null,
+        major: null,
+        year: null,
+        semester: null,
+        classCode: null,
       })
       .map(() => {
+        const tempFaMaj = faker.helpers.arrayElement(combineFacuMajoList);
         return {
           type: (temp = faker.number.int({ min: 1, max: 2 })),
           name: getRandUniqPJName(temp),
           teacherID: getRandSomethingID(teacherInDb, numberOfTeacher),
           requirement: "",
           maxStudentNumber: faker.number.int({ min: 1, max: 2 }),
-          faculty: faker.helpers.arrayElement(facultyList),
+          faculty: tempFaMaj.faculty,
           isPublic: faker.datatype.boolean(0.5),
           isRegistered: faker.datatype.boolean(0.5),
+          major: tempFaMaj.major,
+          year: faker.date.past({ years: 10 }).getFullYear(),
+          semester: faker.number.int({ min: 1, max: 2 }).toString(),
+          classCode: "AAA.BBB.CCC",
         };
       });
 

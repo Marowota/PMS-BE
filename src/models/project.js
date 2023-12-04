@@ -21,6 +21,12 @@ module.exports = (sequelize, DataTypes) => {
       maxStudentNumber: DataTypes.INTEGER,
       type: DataTypes.STRING,
       faculty: DataTypes.STRING,
+
+      major: DataTypes.STRING,
+      year: DataTypes.STRING,
+      semester: DataTypes.STRING,
+      classCode: DataTypes.STRING,
+
       isPublic: DataTypes.BOOLEAN,
       isRegistered: DataTypes.BOOLEAN,
     },
