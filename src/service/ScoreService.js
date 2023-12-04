@@ -1,14 +1,12 @@
 import db from "../models/index";
 import { Sequelize, Op } from "sequelize";
 const getScoreList = async () => {
-  console.log("im");
   try {
     let scoreList = await db.Implementation.findAll({
       include: [
         {
           model: db.Student,
           as: "Student1",
-          required: true,
           include: {
             model: db.User,
             required: true,
@@ -19,7 +17,6 @@ const getScoreList = async () => {
         {
           model: db.Student,
           as: "Student2",
-          required: true,
           include: {
             model: db.User,
             required: true,
@@ -29,7 +26,6 @@ const getScoreList = async () => {
         },
         {
           model: db.Project,
-          as: "pj",
           required: true,
           include: {
             model: db.Teacher,
@@ -40,13 +36,12 @@ const getScoreList = async () => {
               attributes: ["name"],
             },
           },
-          attributes: ["type"],
+          attributes: ["name", "type", "faculty"],
         },
       ],
       attributes: ["id", "score", "isCompleted"],
       raw: true,
       nest: true,
-      group: "pj.name",
     });
     return {
       EM: "Success",
@@ -54,6 +49,7 @@ const getScoreList = async () => {
       DT: scoreList,
     };
   } catch (error) {
+    console.log(">>> check error", error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,

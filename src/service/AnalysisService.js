@@ -273,7 +273,6 @@ const getProjectRegisterStatus = async () => {
       };
     });
 
-    console.log(">>> result: ", result);
     return {
       EM: "Success",
       EC: 0,
