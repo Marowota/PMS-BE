@@ -15,7 +15,7 @@ const getProjectjAndStudentByTeacher = async () => {
         include: {
           model: db.User,
           required: true,
-          attributes: ["name"],
+          attributes: ["name", "email"],
         },
       },
       raw: true,
@@ -235,7 +235,7 @@ const getProjectRegisterStatus = async () => {
         include: {
           model: db.User,
           required: true,
-          attributes: ["name"],
+          attributes: ["name", "email"],
         },
       },
       raw: true,
@@ -365,10 +365,10 @@ const teacherAverageScore = async () => {
           attributes: [],
           include: {
             model: db.Teacher,
-            attributes: [],
+            attributes: ["faculty"],
             include: {
               model: db.User,
-              attributes: [],
+              attributes: ["email"],
             },
           },
         },
@@ -430,10 +430,10 @@ const highestAverageScore = async () => {
           attributes: [],
           include: {
             model: db.Teacher,
-            attributes: [],
+            attributes: ["faculty"],
             include: {
               model: db.User,
-              attributes: [],
+              attributes: ["email"],
             },
           },
         },
