@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "testCoverage": "jest --coverage",
+    "testAnnouncement": "jest AnnouncementService.test.js",
     "start": "nodemon --exec babel-node index.js"
   },
   "author": "",
