@@ -79,8 +79,12 @@ const postCreateAnnouncement = async (req, res) => {
 const putUpdateAnnouncement = async (req, res) => {
   try {
     let updateInfo = await AnnouncementService.updateAnnouncement(
-      req.body,
-      req.params.id
+      {
+        title: req.body.title,
+        content: req.body.content,
+        isPublic: Boolean(req.body.isPublic),
+      },
+      +req.params.id
     );
     return res.status(200).json({
       EM: updateInfo.EM,
@@ -98,7 +102,13 @@ const putUpdateAnnouncement = async (req, res) => {
 
 const handleDeleteAnnouncement = async (req, res) => {
   try {
-    let deleteInfo = await AnnouncementService.deleteAnnouncement(req.body.ids);
+    const annoucementIDs = req.body.ids;
+    annoucementIDs.forEach((id) => {
+      id = parseInt(id);
+    });
+    let deleteInfo = await AnnouncementService.deleteAnnouncement(
+      annoucementIDs
+    );
     return res.status(200).json({
       EM: deleteInfo.EM,
       EC: deleteInfo.EC,
