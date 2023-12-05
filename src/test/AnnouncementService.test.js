@@ -77,7 +77,7 @@ describe("\nTest get announcement by ID", () => {
       DT: newData[0],
     });
 
-    await AnnouncementService.deleteAnnouncement(newData[0].id);
+    await AnnouncementService.deleteAnnouncement([newData[0].id]);
   });
 
   // Test not found case
@@ -154,7 +154,7 @@ describe("\nTest create Announcement", () => {
         nest: true,
       });
 
-      await AnnouncementService.deleteAnnouncement(newData[0].id);
+      await AnnouncementService.deleteAnnouncement([newData[0].id]);
     }
   );
 
@@ -237,7 +237,7 @@ describe("\nTest update Announcement", () => {
         DT: "",
       });
 
-      await AnnouncementService.deleteAnnouncement(newData[0].id);
+      await AnnouncementService.deleteAnnouncement([newData[0].id]);
     }
   );
 
@@ -281,7 +281,7 @@ describe("\nTest update Announcement", () => {
         DT: "",
       });
 
-      await AnnouncementService.deleteAnnouncement(newData[0].id);
+      await AnnouncementService.deleteAnnouncement([newData[0].id]);
     }
   );
 
@@ -325,7 +325,7 @@ describe("\nTest update Announcement", () => {
         DT: "",
       });
 
-      await AnnouncementService.deleteAnnouncement(newData[0].id);
+      await AnnouncementService.deleteAnnouncement([newData[0].id]);
     }
   );
 
@@ -366,6 +366,7 @@ describe("\nTest update Announcement", () => {
   });
 });
 
+// Test delete announcement
 describe("\nTest delete Announcement", () => {
   // Test success case
   it("Delete announcement successfully", async () => {
@@ -391,7 +392,7 @@ describe("\nTest delete Announcement", () => {
     });
 
     await expect(
-      AnnouncementService.deleteAnnouncement(newData[0].id)
+      AnnouncementService.deleteAnnouncement([newData[0].id])
     ).resolves.toEqual({
       EM: "Delete announcement successfully",
       EC: 0,
@@ -399,13 +400,11 @@ describe("\nTest delete Announcement", () => {
     });
   });
 
-  // Test not found case
-  it("Announcement not found", async () => {
-    await expect(
-      AnnouncementService.deleteAnnouncement(100000)
-    ).resolves.toEqual({
-      EM: "Announcement not found",
-      EC: 4,
+  // Test id list empty case
+  it("Announcement id list is empty", async () => {
+    await expect(AnnouncementService.deleteAnnouncement([])).resolves.toEqual({
+      EM: "Announcement id list must not be empty",
+      EC: 5,
       DT: "",
     });
   });
@@ -413,7 +412,7 @@ describe("\nTest delete Announcement", () => {
   // Test invalid id case
   it("Invalid announcement id", async () => {
     await expect(
-      AnnouncementService.deleteAnnouncement("abc")
+      AnnouncementService.deleteAnnouncement([1, 2, "abc"])
     ).resolves.toEqual({
       EM: "Invalid announcement id",
       EC: 1,
