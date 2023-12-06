@@ -240,60 +240,49 @@ const updateAnnouncement = async (announcement, announcementId) => {
   }
 };
 
-const deleteAnnouncement = async (announcementId) => {
-  if (typeof announcementId !== "number")
+const deleteAnnouncement = async (announcementIds) => {
+  console.log("announcementId: ", announcementIds);
+  let check = 0;
+  announcementIds.forEach((id) => {
+    if (typeof id !== "number") check += 1;
+  });
+  if (
+    announcementIds.length === 0 ||
+    announcementIds === undefined ||
+    announcementIds === null
+  ) {
+    return {
+      EM: "Announcement id list must not be empty",
+      EC: 5,
+      DT: "",
+    };
+  } else if (check !== 0) {
     return {
       EM: "Invalid announcement id",
       EC: 1,
       DT: "",
     };
-  else {
-    const Announcement = await db.Announcement.findOne({
-      where: { id: announcementId },
-    });
-    if (Announcement) {
-      try {
-        await Announcement.destroy();
-        return {
-          EM: "Delete announcement successfully",
-          EC: 0,
-          DT: "",
-        };
-      } catch (error) {
-        return {
-          EM: "There are something wrong in the server's services",
-          EC: -1,
-          DT: "",
-        };
-      }
-    } else {
+  } else {
+    try {
+      await db.Announcement.destroy({
+        where: {
+          id: announcementIds,
+        },
+      });
       return {
-        EM: "Announcement not found",
-        EC: 4,
+        EM: "Delete announcement successfully",
+        EC: 0,
+        DT: "",
+      };
+    } catch (error) {
+      return {
+        EM: "There are something wrong in the server's services",
+        EC: -1,
         DT: "",
       };
     }
   }
 };
-
-// try {
-//   await db.Announcement.destroy({
-//     where: {
-//       id: announcementId,
-//     },
-//   });
-//   return {
-//     EM: "Delete Announcement successfully",
-//     EC: 0,
-//     DT: "",
-//   };
-// } catch (error) {
-//   return {
-//     EM: "There are something wrong in the server's services",
-//     EC: -1,
-//     DT: "",
-//   };
-// }
 
 module.exports = {
   getAnnouncementList,
