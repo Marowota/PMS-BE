@@ -241,7 +241,6 @@ const updateAnnouncement = async (announcement, announcementId) => {
 };
 
 const deleteAnnouncement = async (announcementIds) => {
-  console.log("announcementId: ", announcementIds);
   let check = 0;
   announcementIds.forEach((id) => {
     if (typeof id !== "number") check += 1;

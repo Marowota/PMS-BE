@@ -57,7 +57,7 @@ const getProjectById = async (projectId) => {
       nest: true,
     });
     return {
-      EM: "Success",
+      EM: "Get project by id successfully",
       EC: 0,
       DT: project,
     };
@@ -124,7 +124,7 @@ const getProjectList = async () => {
       nest: true,
     });
     return {
-      EM: "Success",
+      EM: "Get project list successfully",
       EC: 0,
       DT: projectList,
     };
@@ -210,7 +210,7 @@ const getProjectWithPagination = async (page, limit, search = "") => {
     };
 
     return {
-      EM: "Get data successfully",
+      EM: "Get project pagination successfully",
       EC: 0,
       DT: data,
     };
