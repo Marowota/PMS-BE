@@ -109,10 +109,32 @@ const putUpdateProject = async (req, res) => {
   }
 };
 
+const putRegisterProject = async (req, res) => {
+  try {
+    let registerInfo = await ProjectService.registerProject(
+      req.body,
+      req.params.id
+    );
+    return res.status(200).json({
+      EM: registerInfo.EM,
+      EC: registerInfo.EC,
+      DT: registerInfo.DT,
+    });
+  } catch (error) {
+    console.log(">> check error", error);
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 module.exports = {
   getAllProjects,
   postCreateProject,
   handleDeleteProject,
   putUpdateProject,
   getProjectById,
+  putRegisterProject,
 };

@@ -32,6 +32,7 @@ const initApiRoutes = (app) => {
   router.post("/project/create", projectController.postCreateProject);
   router.delete("/project/delete", projectController.handleDeleteProject);
   router.put("/project/update/:id", projectController.putUpdateProject);
+  router.put("/project/register/:id", projectController.putRegisterProject);
 
   //--------------------------------------------------------------------------------------------------------------
 

@@ -319,6 +319,85 @@ const updateProject = async (project, projectId) => {
   }
 };
 
+const registerProject = async (student, projectId) => {
+  try {
+    console.log(">>> check student", student, ", projectId:", projectId);
+    const registerData = await db.Project.findOne({
+      where: { id: projectId },
+    });
+    if (registerData) {
+      await registerData.update({
+        isRegistered: 1,
+      });
+    }
+    // Check if an Implementation exists with student1Id
+    let existingImplementation;
+    try {
+      // Check if a projectId exists in the Implementation table
+      existingImplementation = await db.Implementation.findOne({
+        where: {
+          [Op.and]: [
+            { projectID: projectId },
+            {
+              [Op.or]: [
+                { student1ID: student.userId },
+                { student2ID: student.userId },
+              ],
+            },
+          ],
+        },
+      });
+      console.log(
+        ">>>>>>Project exists in the Implementation table.",
+        existingImplementation
+      );
+      // if (existingImplementation) {
+      //   console.log(">>>>>>Project exists in the Implementation table.");
+
+      //   // Check if the corresponding record has a student1ID
+      //   if (existingImplementation.student1ID) {
+      //     console.log(
+      //       "The project has a student1ID: ",
+      //       existingImplementation.student1ID
+      //     );
+      //   } else {
+      //     console.log("The project does not have a student1ID.");
+      //   }
+      // } else {
+      //   console.log("Project does not exist in the Implementation table.");
+      // }
+    } catch (error) {
+      console.error(">>>>> An error occurred:", error);
+    }
+    // let studentData;
+    // console.log(">>> checkkk:", existingImplementation);
+    // if (existingImplementation) {
+    //   // If it exists, create a new Implementation with student2Id
+    //   studentData = await db.Implementation.create({
+    //     student2ID: student.userId,
+    //     projectID: projectId,
+    //   });
+    // } else {
+    //   // If it doesn't exist, create a new Implementation with student1Id
+    //   studentData = await db.Implementation.create({
+    //     student1ID: student.userId,
+    //     projectID: projectId,
+    //   });
+    // }
+    return {
+      EM: "Success",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getProjectList,
   createProject,
@@ -326,4 +405,5 @@ module.exports = {
   deleteProject,
   updateProject,
   getProjectById,
+  registerProject,
 };
