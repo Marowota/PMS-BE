@@ -44,7 +44,7 @@ const getScoreList = async () => {
       nest: true,
     });
     return {
-      EM: "Success",
+      EM: "Get score list successfully",
       EC: 0,
       DT: scoreList,
     };
@@ -59,25 +59,39 @@ const getScoreList = async () => {
 };
 
 const getScoreById = async (id) => {
-  try {
-    let score = await db.Implementation.findOne({
-      where: { id: id },
-      attributes: ["id", "score", "isCompleted"],
-      raw: true,
-      nest: true,
-    });
-
+  if (typeof id !== "number" || id <= 0) {
     return {
-      EM: "Success",
-      EC: 0,
-      DT: score,
-    };
-  } catch (error) {
-    return {
-      EM: "There are something wrong in the server's services",
-      EC: -1,
+      EM: "Score id is invalid",
+      EC: 7,
       DT: "",
     };
+  } else {
+    try {
+      let score = await db.Implementation.findOne({
+        where: { id: id },
+        attributes: ["id", "score", "isCompleted"],
+        raw: true,
+        nest: true,
+      });
+      if (!score) {
+        return {
+          EM: "Score not found",
+          EC: 8,
+          DT: "",
+        };
+      } else
+        return {
+          EM: "Get score by id successfully",
+          EC: 0,
+          DT: score,
+        };
+    } catch (error) {
+      return {
+        EM: "There are something wrong in the server's services",
+        EC: -1,
+        DT: "",
+      };
+    }
   }
 };
 
@@ -160,7 +174,7 @@ const getScorePagination = async (page, limit, search = "") => {
     };
 
     return {
-      EM: "Get data successfully",
+      EM: "Get score pagination successfully",
       EC: 0,
       DT: data,
     };

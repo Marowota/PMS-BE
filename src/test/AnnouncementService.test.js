@@ -141,14 +141,7 @@ describe("\nTest create Announcement", () => {
 
       const newData = await db.Announcement.findAll({
         limit: 1,
-        attributes: [
-          "id",
-          "title",
-          "content",
-          "dateCreated",
-          "dateUpdated",
-          "isPublic",
-        ],
+        attributes: ["id"],
         order: [["createdAt", "DESC"]],
         raw: true,
         nest: true,
@@ -209,14 +202,7 @@ describe("\nTest update Announcement", () => {
 
       const newData = await db.Announcement.findAll({
         limit: 1,
-        attributes: [
-          "id",
-          "title",
-          "content",
-          "dateCreated",
-          "dateUpdated",
-          "isPublic",
-        ],
+        attributes: ["id"],
         order: [["createdAt", "DESC"]],
         raw: true,
         nest: true,
@@ -253,14 +239,7 @@ describe("\nTest update Announcement", () => {
 
       const newData = await db.Announcement.findAll({
         limit: 1,
-        attributes: [
-          "id",
-          "title",
-          "content",
-          "dateCreated",
-          "dateUpdated",
-          "isPublic",
-        ],
+        attributes: ["id"],
         order: [["createdAt", "DESC"]],
         raw: true,
         nest: true,
@@ -297,14 +276,7 @@ describe("\nTest update Announcement", () => {
 
       const newData = await db.Announcement.findAll({
         limit: 1,
-        attributes: [
-          "id",
-          "title",
-          "content",
-          "dateCreated",
-          "dateUpdated",
-          "isPublic",
-        ],
+        attributes: ["id"],
         order: [["createdAt", "DESC"]],
         raw: true,
         nest: true,
@@ -378,14 +350,7 @@ describe("\nTest delete Announcement", () => {
 
     const newData = await db.Announcement.findAll({
       limit: 1,
-      attributes: [
-        "id",
-        "title",
-        "content",
-        "dateCreated",
-        "dateUpdated",
-        "isPublic",
-      ],
+      attributes: ["id"],
       order: [["createdAt", "DESC"]],
       raw: true,
       nest: true,
