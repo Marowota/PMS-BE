@@ -60,16 +60,45 @@ const getProjectById = async (projectId) => {
 const getProjectList = async () => {
   try {
     let projectList = await db.Project.findAll({
-      include: {
-        model: db.Teacher,
-        required: true,
-        attributes: ["id", "faculty", "academicDegree"],
-        include: {
-          model: db.User,
+      include: [
+        {
+          model: db.Teacher,
           required: true,
-          attributes: ["name", "email", "phone"],
+          attributes: ["id", "faculty", "academicDegree"],
+          include: {
+            model: db.User,
+            required: true,
+            attributes: ["name", "email", "phone"],
+          },
         },
-      },
+        {
+          model: db.Implementation,
+          required: true,
+          attributes: [],
+          include: [
+            {
+              model: db.Student,
+              as: "Student1",
+              include: {
+                model: db.User,
+                required: true,
+                attributes: ["name"],
+              },
+              attributes: ["studentCode"],
+            },
+            {
+              model: db.Student,
+              as: "Student2",
+              include: {
+                model: db.User,
+                required: true,
+                attributes: ["name"],
+              },
+              attributes: ["studentCode"],
+            },
+          ],
+        },
+      ],
       attributes: [
         "id",
         "name",
@@ -87,6 +116,7 @@ const getProjectList = async () => {
       DT: projectList,
     };
   } catch (error) {
+    console.log(">>> check error", error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,
@@ -99,16 +129,45 @@ const getProjectWithPagination = async (page, limit, search = "") => {
   try {
     let offset = (page - 1) * limit;
     const { count, rows } = await db.Project.findAndCountAll({
-      include: {
-        model: db.Teacher,
-        required: true,
-        attributes: ["faculty", "academicDegree"],
-        include: {
-          model: db.User,
+      include: [
+        {
+          model: db.Teacher,
           required: true,
-          attributes: ["name", "email", "phone"],
+          attributes: ["faculty", "academicDegree"],
+          include: {
+            model: db.User,
+            required: true,
+            attributes: ["name", "email", "phone"],
+          },
         },
-      },
+        {
+          model: db.Implementation,
+          required: false,
+          attributes: [],
+          include: [
+            {
+              model: db.Student,
+              as: "Student1",
+              include: {
+                model: db.User,
+                required: true,
+                attributes: ["name"],
+              },
+              attributes: ["studentCode"],
+            },
+            {
+              model: db.Student,
+              as: "Student2",
+              include: {
+                model: db.User,
+                required: true,
+                attributes: ["name"],
+              },
+              attributes: ["studentCode"],
+            },
+          ],
+        },
+      ],
       where: {
         [db.Sequelize.col("Project.name")]: Sequelize.where(
           Sequelize.fn("LOWER", Sequelize.col("Project.name")),
