@@ -21,7 +21,7 @@ describe("Test get score list", () => {
 });
 
 // Get score by id
-describe("Test get score by id", () => {
+describe("\nTest get score by id", () => {
   it("Test success case", async () => {
     await expect(ScoreService.getScoreById(85)).resolves.toEqual({
       EM: "Get score by id successfully",
@@ -52,7 +52,7 @@ describe("Test get score by id", () => {
 });
 
 // Test get score pagination
-describe("Test get score pagination", () => {
+describe("\nTest get score pagination", () => {
   it("Test success case", async () => {
     await expect(ScoreService.getScorePagination(1, 10)).resolves.toEqual({
       EM: "Get score pagination successfully",

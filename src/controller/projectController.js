@@ -57,7 +57,13 @@ const getAllProjects = async (req, res) => {
 
 const postCreateProject = async (req, res) => {
   try {
-    let projectData = await ProjectService.createProject(req.body);
+    let projectData = await ProjectService.createProject({
+      projectName: req.body.projectName,
+      projectType: Number(req.body.projectType),
+      projectFaculty: req.body.projectFaculty,
+      teacherId: Number(req.body.teacherId),
+      projectRequirement: req.body.projectRequirement,
+    });
     return res.status(200).json({
       EM: projectData.EM,
       EC: projectData.EC,

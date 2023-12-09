@@ -1,5 +1,6 @@
 import db from "../models/index";
 import { Sequelize } from "sequelize";
+import { Op } from "sequelize";
 const getAnnouncementList = async () => {
   try {
     let announcementList = await db.Announcement.findAll({
@@ -265,7 +266,7 @@ const deleteAnnouncement = async (announcementIds) => {
     try {
       await db.Announcement.destroy({
         where: {
-          id: announcementIds,
+          id: { [Op.in]: announcementIds },
         },
       });
       return {

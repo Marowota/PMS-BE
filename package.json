@@ -10,6 +10,7 @@
     "testTeacher": "jest TeacherService.test.js",
     "testScore": "jest ScoreService.test.js",
     "testAA" : "jest AcademicAffairService.test.js",
+    "testProject": "jest ProjectService.test.js",
     "start": "nodemon --exec babel-node index.js"
   },
   "author": "",

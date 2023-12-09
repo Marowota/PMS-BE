@@ -46,7 +46,7 @@ describe("Test create academic affair", () => {
         order: [["createdAt", "DESC"]],
         nest: true,
         raw: true,
-        attributes: ["id", "academicAffairCode", "faculty", "position"],
+        attributes: ["id"],
       });
 
       await AcademicAffairService.deleteAA(newAA[0].id);
@@ -73,7 +73,7 @@ describe("Test create academic affair", () => {
 });
 
 // Test get academic affair by id
-describe("Test get academic affair by id", () => {
+describe("\nTest get academic affair by id", () => {
   // Test success case
   it("Get academic affair by id successfully", async () => {
     await AcademicAffairService.createAA("AA001", "FIT", "Dean", 1);
@@ -108,7 +108,7 @@ describe("Test get academic affair by id", () => {
 });
 
 // Test get academic affair list
-describe("Test get academic affair list", () => {
+describe("\nTest get academic affair list", () => {
   it("Get academic affair list successfully", async () => {
     await expect(AcademicAffairService.getAAList()).resolves.toEqual({
       EM: "Get academic affair list successfully",
@@ -119,7 +119,7 @@ describe("Test get academic affair list", () => {
 });
 
 // Test update academic affair
-describe("Test update academic affair", () => {
+describe("\nTest update academic affair", () => {
   // Test success case
   test.each(successCase)(
     "Success update academic affair with aacode = %p, faculty = %p, position = %p, userID = %p",
@@ -131,7 +131,7 @@ describe("Test update academic affair", () => {
         order: [["createdAt", "DESC"]],
         nest: true,
         raw: true,
-        attributes: ["id", "academicAffairCode", "faculty", "position"],
+        attributes: ["id"],
       });
 
       const result = await AcademicAffairService.updateAA(
@@ -162,13 +162,7 @@ describe("Test update academic affair", () => {
         order: [["createdAt", "DESC"]],
         nest: true,
         raw: true,
-        attributes: [
-          "id",
-          "academicAffairCode",
-          "faculty",
-          "position",
-          "userID",
-        ],
+        attributes: ["id"],
       });
 
       await expect(
@@ -202,7 +196,7 @@ describe("Test update academic affair", () => {
 });
 
 // Test delete academic affair
-describe("Test delete academic affair", () => {
+describe("\nTest delete academic affair", () => {
   // Test success case
   it("Delete academic affair successfully", async () => {
     await AcademicAffairService.createAA("AA001", "FIT", "Dean", 1);
@@ -212,7 +206,7 @@ describe("Test delete academic affair", () => {
       order: [["createdAt", "DESC"]],
       nest: true,
       raw: true,
-      attributes: ["id", "academicAffairCode", "faculty", "position", "userID"],
+      attributes: ["id"],
     });
 
     await expect(AcademicAffairService.deleteAA(newAA[0].id)).resolves.toEqual({
