@@ -16,7 +16,7 @@ const AccountVerification = async (username = "", password = "") => {
       };
     }
     return {
-      EM: "Success",
+      EM: "Verify account successfully",
       EC: 0,
       DT: result,
     };
