@@ -383,65 +383,107 @@ const registerProject = async (student, projectId) => {
       });
     }
     // Check if an Implementation exists with student1Id
-    let existingImplementation;
     try {
       // Check if a projectId exists in the Implementation table
-      existingImplementation = await db.Implementation.findOne({
+      let projectIsFull = await db.Implementation.findOne({
         where: {
           [Op.and]: [
             { projectID: projectId },
-            {
-              [Op.or]: [
-                { student1ID: student.userId },
-                { student2ID: student.userId },
-              ],
-            },
+            { student1ID: { [Op.ne]: null } },
+            { student2ID: { [Op.ne]: null } },
           ],
         },
+        attributes: ["projectID"],
+        raw: true,
+        nest: true,
+      });
+      let findStudentId = await db.Student.findOne({
+        where: {
+          userId: student.userId,
+        },
+        attributes: ["id"],
+        raw: true,
+        nest: true,
+      });
+      let existingStudent = await db.Implementation.findOne({
+        where: {
+          [Op.or]: [
+            { student1ID: findStudentId.id },
+            { student2ID: findStudentId.id },
+          ],
+        },
+        attributes: ["id"],
+      });
+      let projectList = await db.Implementation.findOne({
+        where: { projectID: projectId },
+        attributes: ["projectID", "student1ID", "student2ID"],
+        raw: true,
+        nest: true,
       });
       console.log(
-        ">>>>>>Project exists in the Implementation table.",
-        existingImplementation
+        ">>>>>>Project exists is full or not: ",
+        projectIsFull,
+        ">>> check studentId: ",
+        findStudentId.id,
+        " >>> check existing student: ",
+        existingStudent,
+        " >>> check project list: projectID:",
+        projectList.projectID,
+        ", student1: ",
+        projectList.student1ID,
+        ", student2: ",
+        projectList.student2ID
       );
-      // if (existingImplementation) {
-      //   console.log(">>>>>>Project exists in the Implementation table.");
+      if (
+        !projectIsFull &&
+        !(existingStudent?.student1ID || existingStudent?.student2ID)
+      ) {
+        // Check if the corresponding record has a student1ID
 
-      //   // Check if the corresponding record has a student1ID
-      //   if (existingImplementation.student1ID) {
-      //     console.log(
-      //       "The project has a student1ID: ",
-      //       existingImplementation.student1ID
-      //     );
-      //   } else {
-      //     console.log("The project does not have a student1ID.");
-      //   }
-      // } else {
-      //   console.log("Project does not exist in the Implementation table.");
-      // }
+        let studentData;
+        if (projectList.student1ID) {
+          // If it exists, create a new Implementation with student2Id
+          studentData = await db.Implementation.update(
+            { student2ID: student.userId },
+            {
+              where: {
+                projectID: projectId,
+              },
+            }
+          );
+        } else {
+          // If it doesn't exist, create a new Implementation with student1Id
+          studentData = await db.Implementation.update(
+            {
+              student1ID: student.userId,
+            },
+            {
+              where: { projectID: projectId },
+            }
+          );
+        }
+        return {
+          EM: "Register project successfully",
+          EC: 0,
+          DT: "",
+        };
+      } else {
+        return {
+          EM: "Project is full",
+          EC: 1,
+          DT: "",
+        };
+      }
     } catch (error) {
-      console.error(">>>>> An error occurred:", error);
+      console.log(">>> check error:", error);
+      return {
+        EM: "There's something wrong in the services",
+        EC: 1,
+        DT: "",
+      };
     }
-    // let studentData;
-    // console.log(">>> checkkk:", existingImplementation);
-    // if (existingImplementation) {
-    //   // If it exists, create a new Implementation with student2Id
-    //   studentData = await db.Implementation.create({
-    //     student2ID: student.userId,
-    //     projectID: projectId,
-    //   });
-    // } else {
-    //   // If it doesn't exist, create a new Implementation with student1Id
-    //   studentData = await db.Implementation.create({
-    //     student1ID: student.userId,
-    //     projectID: projectId,
-    //   });
-    // }
-    return {
-      EM: "Success",
-      EC: 0,
-      DT: "",
-    };
   } catch (error) {
+    console.log(">>> check error:", error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,
