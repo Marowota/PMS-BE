@@ -28,10 +28,11 @@ const initApiRoutes = (app) => {
 
   //--------------------------------------------------------------------------------------------------------------
 
-  // accoount
+  // account
 
   router.get("/account/read", accountController.getAllAccount);
   router.post("/account/create", accountController.postCreateAccount);
+  router.delete("/account/delete", accountController.handleDeleteAccount);
 
   //--------------------------------------------------------------------------------------------------------------
 
