@@ -63,11 +63,11 @@ const getProjectList = async () => {
       include: [
         {
           model: db.Teacher,
-          required: true,
+          required: false,
           attributes: ["id", "faculty", "academicDegree"],
           include: {
             model: db.User,
-            required: true,
+            required: false,
             attributes: ["name", "email", "phone"],
           },
         },
@@ -81,7 +81,7 @@ const getProjectList = async () => {
               as: "Student1",
               include: {
                 model: db.User,
-                required: true,
+                required: false,
                 attributes: ["name"],
               },
               attributes: ["studentCode"],
@@ -91,7 +91,7 @@ const getProjectList = async () => {
               as: "Student2",
               include: {
                 model: db.User,
-                required: true,
+                required: false,
                 attributes: ["name"],
               },
               attributes: ["studentCode"],
@@ -132,11 +132,11 @@ const getProjectWithPagination = async (page, limit, search = "") => {
       include: [
         {
           model: db.Teacher,
-          required: true,
+          required: false,
           attributes: ["faculty", "academicDegree"],
           include: {
             model: db.User,
-            required: true,
+            required: false,
             attributes: ["name", "email", "phone"],
           },
         },
@@ -150,7 +150,7 @@ const getProjectWithPagination = async (page, limit, search = "") => {
               as: "Student1",
               include: {
                 model: db.User,
-                required: true,
+                required: false,
                 attributes: ["name"],
               },
               attributes: ["studentCode"],
@@ -160,7 +160,7 @@ const getProjectWithPagination = async (page, limit, search = "") => {
               as: "Student2",
               include: {
                 model: db.User,
-                required: true,
+                required: false,
                 attributes: ["name"],
               },
               attributes: ["studentCode"],
