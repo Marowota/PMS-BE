@@ -7,6 +7,8 @@ import authController from "../controller/authController";
 import authenticationController from "../controller/authenticationController";
 import analysisController from "../controller/analysisController";
 import authorizationController from "../controller/authorizationController";
+import accountController from "../controller/accountController";
+
 const router = express.Router();
 
 const initApiRoutes = (app) => {
@@ -23,6 +25,13 @@ const initApiRoutes = (app) => {
 
   // authorization
   router.get("/role", authorizationController.getRole);
+
+  //--------------------------------------------------------------------------------------------------------------
+
+  // accoount
+
+  router.get("/account/read", accountController.getAllAccount);
+  router.post("/account/create", accountController.postCreateAccount);
 
   //--------------------------------------------------------------------------------------------------------------
 
