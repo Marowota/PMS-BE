@@ -31,7 +31,9 @@ const initApiRoutes = (app) => {
   // accoount
 
   router.get("/account/read", accountController.getAllAccount);
+  router.get("/account/readById/", accountController.getAccountById);
   router.post("/account/create", accountController.postCreateAccount);
+  router.put("/account/update/:id", accountController.putUpdateAccount);
 
   //--------------------------------------------------------------------------------------------------------------
 

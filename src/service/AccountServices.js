@@ -68,6 +68,52 @@ const getAccountPagination = async (page, limit, search = "") => {
   }
 };
 
+const getAccountById = async (id) => {
+  try {
+    const result = await db.Account.findOne({
+      attributes: ["id", "username", "password", "role", "userID"],
+      include: [
+        {
+          model: db.User,
+          attributes: ["email", "name", "phone", "dateOfBirth"],
+          include: [
+            {
+              model: db.AcademicAffair,
+              required: false,
+            },
+            {
+              model: db.Student,
+              required: false,
+            },
+            {
+              model: db.Teacher,
+              required: false,
+            },
+          ],
+        },
+      ],
+      where: {
+        id: id,
+      },
+      raw: true,
+      nest: true,
+    });
+
+    return {
+      EM: "Get account info successfully",
+      EC: 0,
+      DT: result,
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "There is something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 const createAccount = async (rawData) => {
   console.log("creating account", rawData);
   let accountExist = await db.Account.findOne({
@@ -136,7 +182,145 @@ const createAccount = async (rawData) => {
   }
 };
 
+const updateAccount = async (id, rawData) => {
+  console.log("updating id: ", id);
+  console.log("updating: ", rawData);
+  let accountExist = await db.Account.findOne({
+    attributes: ["id"],
+    where: {
+      [Op.and]: [
+        { username: rawData.account.username },
+        { id: { [Op.ne]: id } },
+      ],
+    },
+    raw: true,
+    nest: true,
+  });
+  if (accountExist) {
+    return {
+      EM: "Username already exist",
+      EC: -2,
+      DT: "",
+    };
+  }
+  try {
+    await db.User.update(
+      {
+        email: rawData.user.email,
+        name: rawData.user.name,
+        dateOfBirth: rawData.user.dateOfBirth,
+        phone: rawData.user.phone,
+      },
+      { where: { id: rawData.user.id } }
+    );
+    await db.Account.update(
+      {
+        username: rawData.account.username,
+        password: rawData.account.password,
+        role: rawData.role.value,
+        userID: rawData.user.id,
+      },
+      { where: { id: rawData.account.id } }
+    );
+
+    const removeData = async () => {
+      if (rawData.role.aa.id) {
+        await db.AcademicAffair.destroy({ where: { id: rawData.role.aa.id } });
+      }
+      if (rawData.role.teacher.id) {
+        await db.Teacher.destroy({ where: { id: rawData.role.teacher.id } });
+      }
+      if (rawData.role.student.id) {
+        await db.Student.destroy({ where: { id: rawData.role.student.id } });
+      }
+    };
+
+    switch (rawData.role.value) {
+      case "aa":
+        if (rawData.role.aa.id) {
+          await db.AcademicAffair.update(
+            {
+              academicAffairCode: rawData.role.aa.code,
+              faculty: rawData.role.aa.faculty,
+              userID: rawData.user.id,
+            },
+            { where: { id: rawData.role.aa.id } }
+          );
+        } else {
+          await removeData();
+          await db.AcademicAffair.create({
+            academicAffairCode: rawData.role.aa.code,
+            faculty: rawData.role.aa.faculty,
+            userID: rawData.user.id,
+          });
+        }
+        break;
+
+      case "teacher":
+        if (rawData.role.teacher.id) {
+          await db.Teacher.update(
+            {
+              teacherCode: rawData.role.teacher.code,
+              faculty: rawData.role.teacher.faculty,
+              academicDegree: rawData.role.teacher.academicDegree,
+              userID: rawData.user.id,
+            },
+            { where: { id: rawData.role.teacher.id } }
+          );
+        } else {
+          await removeData();
+          await db.Teacher.create({
+            teacherCode: rawData.role.teacher.code,
+            faculty: rawData.role.teacher.faculty,
+            academicDegree: rawData.role.teacher.academicDegree,
+            userID: rawData.user.id,
+          });
+        }
+        break;
+
+      case "student":
+        if (rawData.role.student.id) {
+          await db.Student.update(
+            {
+              studentCode: rawData.role.student.code,
+              class: rawData.role.student.class,
+              major: rawData.role.student.major,
+              userID: rawData.user.id,
+            },
+            { where: { id: rawData.role.student.id } }
+          );
+        } else {
+          await removeData();
+          await db.Student.create({
+            studentCode: rawData.role.student.code,
+            class: rawData.role.student.class,
+            major: rawData.role.student.major,
+            userID: rawData.user.id,
+          });
+        }
+        break;
+
+      default:
+        removeData();
+    }
+    return {
+      EM: "Update account successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getAccountPagination,
+  getAccountById,
   createAccount,
+  updateAccount,
 };

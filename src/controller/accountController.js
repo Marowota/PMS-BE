@@ -18,11 +18,11 @@ const getAllAccount = async (req, res) => {
         DT: data.DT,
       });
     } else {
-      const announcement = await AccountServices.getAccountPagination();
+      const account = await AccountServices.getAccountPagination();
       return res.status(200).json({
-        EM: announcement.EM,
-        EC: announcement.EC,
-        DT: announcement.DT,
+        EM: account.EM,
+        EC: account.EC,
+        DT: account.DT,
       });
     }
   } catch (error) {
@@ -35,13 +35,31 @@ const getAllAccount = async (req, res) => {
   }
 };
 
+const getAccountById = async (req, res) => {
+  try {
+    let data = await AccountServices.getAccountById(req.query.id);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 const postCreateAccount = async (req, res) => {
   try {
-    let announcementData = await AccountServices.createAccount(req.body);
+    let data = await AccountServices.createAccount(req.body);
     return res.status(200).json({
-      EM: announcementData.EM,
-      EC: announcementData.EC,
-      DT: announcementData.DT,
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
     });
   } catch (error) {
     return res.status(500).json({
@@ -52,7 +70,27 @@ const postCreateAccount = async (req, res) => {
   }
 };
 
+const putUpdateAccount = async (req, res) => {
+  try {
+    let data = await AccountServices.updateAccount(+req.params.id, req.body);
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 module.exports = {
   getAllAccount,
+  getAccountById,
   postCreateAccount,
+  putUpdateAccount,
 };
