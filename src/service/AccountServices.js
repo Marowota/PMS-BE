@@ -70,6 +70,19 @@ const getAccountPagination = async (page, limit, search = "") => {
 
 const createAccount = async (rawData) => {
   console.log("creating account", rawData);
+  let accountExist = await db.Account.findOne({
+    attributes: ["id"],
+    where: { username: rawData.account.username },
+    raw: true,
+    nest: true,
+  });
+  if (accountExist) {
+    return {
+      EM: "Username already exist",
+      EC: -2,
+      DT: "",
+    };
+  }
   try {
     let userInfo = await db.User.create({
       email: rawData.user.email,
@@ -86,30 +99,30 @@ const createAccount = async (rawData) => {
     switch (accountInfo.role) {
       case "aa":
         await db.AcademicAffair.create({
-          academicAffairCode: rawData.aa.code,
-          faculty: rawData.aa.faculty,
+          academicAffairCode: rawData.role.aa.code,
+          faculty: rawData.role.aa.faculty,
           userID: userInfo.id,
         });
         break;
       case "teacher":
         await db.Teacher.create({
-          teacherCode: rawData.teacher.code,
-          faculty: rawData.teacher.faculty,
-          academicDegree: rawData.teacher.academicDegree,
+          teacherCode: rawData.role.teacher.code,
+          faculty: rawData.role.teacher.faculty,
+          academicDegree: rawData.role.teacher.academicDegree,
           userID: userInfo.id,
         });
         break;
       case "student":
         await db.Student.create({
-          studentCode: rawData.student.code,
-          class: rawData.student.class,
-          major: rawData.student.major,
+          studentCode: rawData.role.student.code,
+          class: rawData.role.student.class,
+          major: rawData.role.student.major,
           userID: userInfo.id,
         });
         break;
     }
     return {
-      EM: "New announcement created successfully",
+      EM: "New account created successfully",
       EC: 0,
       DT: "",
     };
