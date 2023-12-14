@@ -73,7 +73,7 @@ const getProjectList = async () => {
         },
         {
           model: db.Implementation,
-          required: true,
+          required: false,
           attributes: [],
           include: [
             {
