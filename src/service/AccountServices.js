@@ -318,9 +318,33 @@ const updateAccount = async (id, rawData) => {
   }
 };
 
+const deleteAccount = async (accountIds) => {
+  try {
+    await db.Account.destroy({
+      where: {
+        id: {
+          [Op.in]: accountIds,
+        },
+      },
+    });
+    return {
+      EM: "Delete account successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getAccountPagination,
   getAccountById,
   createAccount,
   updateAccount,
+  deleteAccount,
 };

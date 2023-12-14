@@ -88,9 +88,29 @@ const putUpdateAccount = async (req, res) => {
   }
 };
 
+const handleDeleteAccount = async (req, res) => {
+  try {
+    let deleteAccount = await AccountServices.deleteAccount(
+      req.body.accountIds
+    );
+    return res.status(200).json({
+      EM: deleteAccount.EM,
+      EC: deleteAccount.EC,
+      DT: deleteAccount.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 module.exports = {
   getAllAccount,
   getAccountById,
   postCreateAccount,
   putUpdateAccount,
+  handleDeleteAccount,
 };

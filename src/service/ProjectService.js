@@ -63,17 +63,17 @@ const getProjectList = async () => {
       include: [
         {
           model: db.Teacher,
-          required: true,
+          required: false,
           attributes: ["id", "faculty", "academicDegree"],
           include: {
             model: db.User,
-            required: true,
+            required: false,
             attributes: ["name", "email", "phone"],
           },
         },
         {
           model: db.Implementation,
-          required: true,
+          required: false,
           attributes: [],
           include: [
             {
@@ -81,7 +81,7 @@ const getProjectList = async () => {
               as: "Student1",
               include: {
                 model: db.User,
-                required: true,
+                required: false,
                 attributes: ["name"],
               },
               attributes: ["studentCode"],
@@ -91,7 +91,7 @@ const getProjectList = async () => {
               as: "Student2",
               include: {
                 model: db.User,
-                required: true,
+                required: false,
                 attributes: ["name"],
               },
               attributes: ["studentCode"],
@@ -132,11 +132,11 @@ const getProjectWithPagination = async (page, limit, search = "") => {
       include: [
         {
           model: db.Teacher,
-          required: true,
+          required: false,
           attributes: ["faculty", "academicDegree"],
           include: {
             model: db.User,
-            required: true,
+            required: false,
             attributes: ["name", "email", "phone"],
           },
         },
@@ -150,7 +150,7 @@ const getProjectWithPagination = async (page, limit, search = "") => {
               as: "Student1",
               include: {
                 model: db.User,
-                required: true,
+                required: false,
                 attributes: ["name"],
               },
               attributes: ["studentCode"],
@@ -160,7 +160,7 @@ const getProjectWithPagination = async (page, limit, search = "") => {
               as: "Student2",
               include: {
                 model: db.User,
-                required: true,
+                required: false,
                 attributes: ["name"],
               },
               attributes: ["studentCode"],
@@ -373,7 +373,6 @@ const updateProject = async (project, projectId) => {
 
 const registerProject = async (student, projectId) => {
   try {
-    console.log(">>> check student", student, ", projectId:", projectId);
     const registerData = await db.Project.findOne({
       where: { id: projectId },
     });
@@ -382,9 +381,7 @@ const registerProject = async (student, projectId) => {
         isRegistered: 1,
       });
     }
-    // Check if an Implementation exists with student1Id
     try {
-      // Check if a projectId exists in the Implementation table
       let projectIsFull = await db.Implementation.findOne({
         where: {
           [Op.and]: [
@@ -405,15 +402,25 @@ const registerProject = async (student, projectId) => {
         raw: true,
         nest: true,
       });
+      const studentId = findStudentId.id;
       let existingStudent = await db.Implementation.findOne({
         where: {
-          [Op.or]: [
-            { student1ID: findStudentId.id },
-            { student2ID: findStudentId.id },
-          ],
+          [Op.or]: [{ student1ID: studentId }, { student2ID: studentId }],
         },
-        attributes: ["id"],
+        attributes: ["student1ID", "student2ID"],
+        raw: true,
+        nest: true,
       });
+      if (
+        existingStudent?.student1ID === studentId ||
+        existingStudent?.student2ID === studentId
+      ) {
+        return {
+          EM: "You've already joined a project! Please remove the current project before registering a new one.",
+          EC: 1,
+          DT: "",
+        };
+      }
       let projectList = await db.Implementation.findOne({
         where: { projectID: projectId },
         attributes: ["projectID", "student1ID", "student2ID"],
@@ -444,7 +451,7 @@ const registerProject = async (student, projectId) => {
         if (projectList.student1ID) {
           // If it exists, create a new Implementation with student2Id
           studentData = await db.Implementation.update(
-            { student2ID: student.userId },
+            { student2ID: studentId },
             {
               where: {
                 projectID: projectId,
@@ -455,7 +462,7 @@ const registerProject = async (student, projectId) => {
           // If it doesn't exist, create a new Implementation with student1Id
           studentData = await db.Implementation.update(
             {
-              student1ID: student.userId,
+              student1ID: studentId,
             },
             {
               where: { projectID: projectId },
