@@ -14,16 +14,45 @@ const getProjectById = async (projectId) => {
     try {
       let project = await db.Project.findOne({
         where: { id: projectId },
-        include: {
-          model: db.Teacher,
-          required: true,
-          attributes: ["id", "faculty", "academicDegree"],
-          include: {
-            model: db.User,
+        include: [
+          {
+            model: db.Teacher,
             required: true,
-            attributes: ["id", "name", "email", "phone"],
+            attributes: ["id", "faculty", "academicDegree"],
+            include: {
+              model: db.User,
+              required: true,
+              attributes: ["id", "name", "email", "phone"],
+            },
           },
-        },
+          {
+            model: db.Implementation,
+            required: false,
+            attributes: [],
+            include: [
+              {
+                model: db.Student,
+                as: "Student1",
+                include: {
+                  model: db.User,
+                  required: false,
+                  attributes: ["name"],
+                },
+                attributes: ["studentCode"],
+              },
+              {
+                model: db.Student,
+                as: "Student2",
+                include: {
+                  model: db.User,
+                  required: false,
+                  attributes: ["name"],
+                },
+                attributes: ["studentCode"],
+              },
+            ],
+          },
+        ],
         attributes: [
           "id",
           "name",

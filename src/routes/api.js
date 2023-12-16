@@ -10,6 +10,7 @@ import authorizationController from "../controller/authorizationController";
 import accountController from "../controller/accountController";
 import userController from "../controller/userController";
 import classInfoControler from "../controller/classInfoController";
+import studentController from "../controller/studentController";
 
 const router = express.Router();
 
@@ -117,6 +118,15 @@ const initApiRoutes = (app) => {
   //--------------------------------------------------------------------------------------------------------------
   //user
   router.get("/user/readById", userController.getUserById);
+
+  //--------------------------------------------------------------------------------------------------------------
+  //student
+  router.get(
+    "/student/readProjectOfStudent",
+    studentController.getStudentProject
+  );
+
+  //--------------------------------------------------------------------------------------------------------------
 
   return app.use("/api/v1", router);
 };
