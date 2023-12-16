@@ -8,6 +8,7 @@ import authenticationController from "../controller/authenticationController";
 import analysisController from "../controller/analysisController";
 import authorizationController from "../controller/authorizationController";
 import accountController from "../controller/accountController";
+import userController from "../controller/userController";
 
 const router = express.Router();
 
@@ -108,6 +109,8 @@ const initApiRoutes = (app) => {
   );
 
   //--------------------------------------------------------------------------------------------------------------
+  //user
+  router.get("/user/readById", userController.getUserById);
 
   return app.use("/api/v1", router);
 };
