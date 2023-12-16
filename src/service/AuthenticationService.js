@@ -1,14 +1,16 @@
 import db from "../models/index";
+import bcrypt from "bcryptjs";
 
 const AccountVerification = async (username = "", password = "") => {
   try {
     let result = await db.Account.findOne({
-      attributes: ["id"],
-      where: { username: username, password: password },
+      attributes: ["id", "password"],
+      where: { username: username },
       raw: true,
       nest: true,
     });
-    if (result === null) {
+    console.log(result);
+    if (result === null || !bcrypt.compareSync(password, result.password)) {
       return {
         EM: "Username or password is incorrect",
         EC: -2,
@@ -18,7 +20,7 @@ const AccountVerification = async (username = "", password = "") => {
     return {
       EM: "Verify account successfully",
       EC: 0,
-      DT: result,
+      DT: { id: result.id },
     };
   } catch (error) {
     return {

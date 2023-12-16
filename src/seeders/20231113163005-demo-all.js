@@ -3,6 +3,9 @@ const { fakerVI } = require("@faker-js/faker");
 const { UniqueEnforcer } = require("enforce-unique");
 const { SEPJ1N2324 } = require("./temp-data/se-pj-da1-23-24");
 const { SEPJ2N2324 } = require("./temp-data/se-pj-da2-23-24");
+const bcrypt = require("bcryptjs");
+const salt = bcrypt.genSaltSync(10);
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -334,6 +337,11 @@ module.exports = {
 
     // Account
 
+    const hashUserPassword = (userPassword) => {
+      let hashPassword = bcrypt.hashSync(userPassword, salt);
+      return hashPassword;
+    };
+
     ueId = new UniqueEnforcer(); //reset before adding to account
     let accUserInDb = Array.from(userInDb[0]);
     let tempRoleList = {
@@ -371,7 +379,7 @@ module.exports = {
         }
         return {
           username: faker.internet.userName(),
-          password: faker.internet.password(),
+          password: hashUserPassword("123"),
           role: tempRole,
           userID: temp,
         };
