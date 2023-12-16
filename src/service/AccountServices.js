@@ -168,7 +168,7 @@ const createAccount = async (rawData) => {
       case "student":
         await db.Student.create({
           studentCode: rawData.role.student.code,
-          class: rawData.role.student.class,
+          classID: rawData.role.student.class,
           major: rawData.role.student.major,
           userID: userInfo.id,
         });
@@ -290,7 +290,7 @@ const updateAccount = async (id, rawData) => {
           await db.Student.update(
             {
               studentCode: rawData.role.student.code,
-              class: rawData.role.student.class,
+              classID: rawData.role.student.class,
               major: rawData.role.student.major,
               userID: rawData.user.id,
             },
@@ -300,7 +300,7 @@ const updateAccount = async (id, rawData) => {
           await removeData();
           await db.Student.create({
             studentCode: rawData.role.student.code,
-            class: rawData.role.student.class,
+            classID: rawData.role.student.class,
             major: rawData.role.student.major,
             userID: rawData.user.id,
           });
