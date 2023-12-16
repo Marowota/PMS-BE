@@ -9,8 +9,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      ClassInfo.hasMany(models.Project);
-      ClassInfo.hasMany(models.Student);
+      ClassInfo.hasMany(models.Project, {
+        foreignKey: { name: "classID", allowNull: true },
+      });
+      ClassInfo.hasMany(models.Student, {
+        foreignKey: { name: "classID", allowNull: true },
+      });
     }
   }
   ClassInfo.init(
