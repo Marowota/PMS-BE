@@ -18,6 +18,10 @@ npx sequelize-cli model:generate --name Implementation --attributes studentID:in
 
 npx sequelize-cli model:generate --name JWTData --attributes refreshToken:string
 
+npx sequelize-cli model:generate --name RegisterTime --attributes start:date,end:date,faculty:string,year:string,semester:string
+
+npx sequelize-cli model:generate --name ClassInfo --attributes className:string
+
 
 #run this after all
 npx sequelize-cli db:migrate

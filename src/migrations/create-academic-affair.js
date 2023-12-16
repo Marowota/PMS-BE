@@ -15,9 +15,6 @@ module.exports = {
       faculty: {
         type: Sequelize.STRING,
       },
-      position: {
-        type: Sequelize.STRING,
-      },
       userID: {
         type: Sequelize.INTEGER,
       },

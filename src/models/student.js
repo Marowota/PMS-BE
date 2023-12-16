@@ -10,16 +10,17 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       Student.belongsTo(models.User, { foreignKey: "userID" });
+      Student.belongsTo(models.ClassInfo, { foreignKey: "classID" });
       Student.hasMany(models.Implementation);
     }
   }
   Student.init(
     {
       studentCode: DataTypes.STRING,
-      class: DataTypes.STRING,
       major: DataTypes.STRING,
       status: DataTypes.STRING,
       userID: DataTypes.INTEGER,
+      classID: DataTypes.INTEGER,
     },
     {
       sequelize,

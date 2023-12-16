@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       projectID: DataTypes.INTEGER,
       score: DataTypes.FLOAT,
       isCompleted: DataTypes.BOOLEAN,
+      submissionLink: DataTypes.STRING,
     },
     {
       sequelize,

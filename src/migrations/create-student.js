@@ -12,9 +12,6 @@ module.exports = {
       studentCode: {
         type: Sequelize.STRING,
       },
-      class: {
-        type: Sequelize.STRING,
-      },
       major: {
         type: Sequelize.STRING,
       },
@@ -22,6 +19,9 @@ module.exports = {
         type: Sequelize.STRING,
       },
       userID: {
+        type: Sequelize.INTEGER,
+      },
+      classID: {
         type: Sequelize.INTEGER,
       },
       createdAt: {

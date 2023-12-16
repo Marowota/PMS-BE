@@ -24,6 +24,9 @@ module.exports = {
       isCompleted: {
         type: Sequelize.BOOLEAN,
       },
+      submissionLink: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

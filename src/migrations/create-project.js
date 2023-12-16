@@ -30,20 +30,17 @@ module.exports = {
       major: {
         type: Sequelize.STRING,
       },
-      year: {
-        type: Sequelize.STRING,
-      },
-      semester: {
-        type: Sequelize.STRING,
-      },
-      classCode: {
-        type: Sequelize.STRING,
+      classID: {
+        type: Sequelize.INTEGER,
       },
       isPublic: {
         type: Sequelize.BOOLEAN,
       },
       isRegistered: {
         type: Sequelize.BOOLEAN,
+      },
+      registerTimeID: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

@@ -250,7 +250,6 @@ module.exports = {
     let studentList = Array(numberOfStudent)
       .fill({
         studentCode: null,
-        class: null,
         major: null,
         status: null,
         userID: null,
@@ -260,7 +259,6 @@ module.exports = {
         studentUserIds.push(uid);
         return {
           studentCode: getRandUniqStudentID(),
-          class: "",
           major: faker.helpers.arrayElement(majorList),
           status: faker.number.int({ min: 0, max: 2 }),
           userID: uid,
@@ -327,7 +325,6 @@ module.exports = {
         username: null,
         password: null,
         role: null,
-        status: null,
         userID: null,
       })
       .map(() => {
@@ -347,7 +344,6 @@ module.exports = {
           username: faker.internet.userName(),
           password: faker.internet.password(),
           role: tempRole,
-          status: "",
           userID: temp,
         };
       });
@@ -361,34 +357,36 @@ module.exports = {
     let temp;
     let projectList = Array(numberOfProject)
       .fill({
-        type: null,
         name: null,
         teacherID: null,
         requirement: null,
         maxStudentNumber: null,
+        type: null,
         faculty: null,
+
+        major: null,
+        classID: null,
+
         isPublic: null,
         isRegistered: null,
-        major: null,
-        year: null,
-        semester: null,
-        classCode: null,
+        registerTimeID: null,
       })
       .map(() => {
         const tempFaMaj = faker.helpers.arrayElement(combineFacuMajoList);
         return {
-          type: (temp = faker.number.int({ min: 1, max: 2 })),
           name: getRandUniqPJName(temp),
           teacherID: getRandSomethingID(teacherInDb, numberOfTeacher),
           requirement: "",
           maxStudentNumber: faker.number.int({ min: 1, max: 2 }),
+          type: (temp = faker.number.int({ min: 1, max: 2 })),
           faculty: tempFaMaj.faculty,
+
+          major: tempFaMaj.major,
+          classID: null,
+
           isPublic: faker.datatype.boolean(0.5),
           isRegistered: faker.datatype.boolean(0.5),
-          major: tempFaMaj.major,
-          year: faker.date.past({ years: 10 }).getFullYear(),
-          semester: faker.number.int({ min: 1, max: 2 }).toString(),
-          classCode: "AAA.BBB.CCC",
+          registerTimeID: null,
         };
       });
 
@@ -412,6 +410,7 @@ module.exports = {
         projectID: null,
         score: null,
         isCompleted: null,
+        submissionLink: null,
       })
       .map(() => {
         return {
@@ -434,6 +433,7 @@ module.exports = {
           ),
           score: faker.number.float({ min: 0, max: 10, precision: 0.1 }),
           isCompleted: faker.datatype.boolean(0.25),
+          submissionLink: null,
         };
       });
 

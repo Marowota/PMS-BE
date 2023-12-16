@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Project.belongsTo(models.Teacher, { foreignKey: "teacherID" });
       Project.hasOne(models.Implementation);
+      Project.belongsTo(models.ClassInfo, { foreignKey: "classID" });
+      Project.belongsTo(models.RegisterTime, { foreignKey: "registerTimeID" });
     }
   }
   Project.init(
@@ -23,12 +25,11 @@ module.exports = (sequelize, DataTypes) => {
       faculty: DataTypes.STRING,
 
       major: DataTypes.STRING,
-      year: DataTypes.STRING,
-      semester: DataTypes.STRING,
-      classCode: DataTypes.STRING,
+      classID: DataTypes.INTEGER,
 
       isPublic: DataTypes.BOOLEAN,
       isRegistered: DataTypes.BOOLEAN,
+      registerTimeID: DataTypes.INTEGER,
     },
     {
       sequelize,
