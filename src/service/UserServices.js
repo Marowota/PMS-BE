@@ -10,7 +10,7 @@ const getUserByID = async (userId) => {
         },
         attributes: ["email", "name", "phone", "dateOfBirth"],
       },
-      attributes: ["id", "role"],
+      attributes: ["id", "role", "username"],
     });
     let data = {};
     let role = user.role;
