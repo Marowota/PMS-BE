@@ -9,6 +9,7 @@ import analysisController from "../controller/analysisController";
 import authorizationController from "../controller/authorizationController";
 import accountController from "../controller/accountController";
 import userController from "../controller/userController";
+import classInfoControler from "../controller/classInfoController";
 
 const router = express.Router();
 
@@ -26,6 +27,11 @@ const initApiRoutes = (app) => {
 
   // authorization
   router.get("/role", authorizationController.getRole);
+
+  //--------------------------------------------------------------------------------------------------------------
+
+  // classInfo
+  router.get("/classInfo/read", classInfoControler.getAllClass);
 
   //--------------------------------------------------------------------------------------------------------------
 

@@ -1,11 +1,18 @@
 import db from "../models/index";
 import { Op, Sequelize } from "sequelize";
+import bcrypt from "bcryptjs";
+const salt = bcrypt.genSaltSync(10);
+
+const hashUserPassword = (userPassword) => {
+  let hashPassword = bcrypt.hashSync(userPassword, salt);
+  return hashPassword;
+};
 
 const getAccountPagination = async (page, limit, search = "") => {
   try {
     let offset = (page - 1) * limit;
     const { count, rows } = await db.Account.findAndCountAll({
-      attributes: ["id", "username", "password", "role"],
+      attributes: ["id", "username", "role"],
       include: [
         {
           model: db.User,
@@ -71,7 +78,7 @@ const getAccountPagination = async (page, limit, search = "") => {
 const getAccountById = async (id) => {
   try {
     const result = await db.Account.findOne({
-      attributes: ["id", "username", "password", "role", "userID"],
+      attributes: ["id", "username", "role", "userID"],
       include: [
         {
           model: db.User,
@@ -138,7 +145,7 @@ const createAccount = async (rawData) => {
     });
     let accountInfo = await db.Account.create({
       username: rawData.account.username,
-      password: rawData.account.password,
+      password: hashUserPassword(rawData.account.password),
       role: rawData.role.value,
       userID: userInfo.id,
     });
@@ -161,7 +168,7 @@ const createAccount = async (rawData) => {
       case "student":
         await db.Student.create({
           studentCode: rawData.role.student.code,
-          class: rawData.role.student.class,
+          classID: rawData.role.student.class,
           major: rawData.role.student.major,
           userID: userInfo.id,
         });
@@ -216,7 +223,7 @@ const updateAccount = async (id, rawData) => {
     await db.Account.update(
       {
         username: rawData.account.username,
-        password: rawData.account.password,
+        password: hashUserPassword(rawData.account.password),
         role: rawData.role.value,
         userID: rawData.user.id,
       },
@@ -283,7 +290,7 @@ const updateAccount = async (id, rawData) => {
           await db.Student.update(
             {
               studentCode: rawData.role.student.code,
-              class: rawData.role.student.class,
+              classID: rawData.role.student.class,
               major: rawData.role.student.major,
               userID: rawData.user.id,
             },
@@ -293,7 +300,7 @@ const updateAccount = async (id, rawData) => {
           await removeData();
           await db.Student.create({
             studentCode: rawData.role.student.code,
-            class: rawData.role.student.class,
+            classID: rawData.role.student.class,
             major: rawData.role.student.major,
             userID: rawData.user.id,
           });

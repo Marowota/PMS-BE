@@ -3,6 +3,9 @@ const { fakerVI } = require("@faker-js/faker");
 const { UniqueEnforcer } = require("enforce-unique");
 const { SEPJ1N2324 } = require("./temp-data/se-pj-da1-23-24");
 const { SEPJ2N2324 } = require("./temp-data/se-pj-da2-23-24");
+const bcrypt = require("bcryptjs");
+const salt = bcrypt.genSaltSync(10);
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -83,6 +86,12 @@ module.exports = {
       },
     ];
     const academicDegreeList = ["CN", "KS", "ThS", "TS"];
+    const classNameList = [
+      "SE121.O11.PMCL",
+      "SE122.O12",
+      "CE206.O11",
+      "CE206.O11.KTCL",
+    ];
     // Unique Enforcers
     let ueId = new UniqueEnforcer();
     let ueTeacherId = new UniqueEnforcer();
@@ -216,6 +225,28 @@ module.exports = {
 
     console.log(">> Seeded User successfully");
 
+    // ClassInfo
+
+    let i = -1;
+    let classInfoList = Array(classNameList.length)
+      .fill({
+        name: null,
+      })
+      .map(() => {
+        i++;
+        return {
+          className: classNameList[i],
+        };
+      });
+
+    await queryInterface.bulkInsert("ClassInfo", classInfoList, {});
+
+    const classInfoInDb = await queryInterface.sequelize.query(
+      `SELECT id from classinfo order by id desc limit ${classNameList.length}`
+    );
+
+    console.log(">> Seeded ClassInfo successfully");
+
     // Academic affair
 
     let aaStuTechUserInDb = Array.from(userInDb[0]);
@@ -253,6 +284,7 @@ module.exports = {
         major: null,
         status: null,
         userID: null,
+        classID: null,
       })
       .map(() => {
         let uid = getRandUniqSomethingID(aaStuTechUserInDb, ueId, numberOfUser);
@@ -305,6 +337,11 @@ module.exports = {
 
     // Account
 
+    const hashUserPassword = (userPassword) => {
+      let hashPassword = bcrypt.hashSync(userPassword, salt);
+      return hashPassword;
+    };
+
     ueId = new UniqueEnforcer(); //reset before adding to account
     let accUserInDb = Array.from(userInDb[0]);
     let tempRoleList = {
@@ -342,7 +379,7 @@ module.exports = {
         }
         return {
           username: faker.internet.userName(),
-          password: faker.internet.password(),
+          password: hashUserPassword("123"),
           role: tempRole,
           userID: temp,
         };
@@ -373,6 +410,7 @@ module.exports = {
       })
       .map(() => {
         const tempFaMaj = faker.helpers.arrayElement(combineFacuMajoList);
+
         return {
           name: getRandUniqPJName(temp),
           teacherID: getRandSomethingID(teacherInDb, numberOfTeacher),
@@ -382,7 +420,7 @@ module.exports = {
           faculty: tempFaMaj.faculty,
 
           major: tempFaMaj.major,
-          classID: null,
+          classID: faker.helpers.arrayElement(classInfoInDb[0]).id,
 
           isPublic: faker.datatype.boolean(0.5),
           isRegistered: faker.datatype.boolean(0.5),
@@ -479,5 +517,6 @@ module.exports = {
     await queryInterface.bulkDelete("AcademicAffair", null, {});
     await queryInterface.bulkDelete("Account", null, {});
     await queryInterface.bulkDelete("User", null, {});
+    await queryInterface.bulkDelete("ClassInfo", null, {});
   },
 };
