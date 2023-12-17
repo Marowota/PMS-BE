@@ -456,20 +456,20 @@ const registerProject = async (student, projectId) => {
         raw: true,
         nest: true,
       });
-      console.log(
-        ">>>>>>Project exists is full or not: ",
-        projectIsFull,
-        ">>> check studentId: ",
-        findStudentId.id,
-        " >>> check existing student: ",
-        existingStudent,
-        " >>> check project list: projectID:",
-        projectList.projectID,
-        ", student1: ",
-        projectList.student1ID,
-        ", student2: ",
-        projectList.student2ID
-      );
+      // console.log(
+      //   ">>>>>>Project exists is full or not: ",
+      //   projectIsFull,
+      //   ">>> check studentId: ",
+      //   findStudentId.id,
+      //   " >>> check existing student: ",
+      //   existingStudent,
+      //   " >>> check project list: projectID:",
+      //   projectList.projectID,
+      //   ", student1: ",
+      //   projectList.student1ID,
+      //   ", student2: ",
+      //   projectList.student2ID
+      // );
       if (
         !projectIsFull &&
         !(existingStudent?.student1ID || existingStudent?.student2ID)
@@ -528,6 +528,57 @@ const registerProject = async (student, projectId) => {
   }
 };
 
+const unregisterProject = async (studentId, projectId) => {
+  try {
+    console.log(">>> studentId: ", studentId, " >>> projectId:", projectId);
+    const unregisterData = await db.Implementation.update(
+      {
+        student1ID: db.Sequelize.literal(
+          `CASE WHEN student1ID = ${studentId} THEN NULL ELSE student1ID END`
+        ),
+        student2ID: db.Sequelize.literal(
+          `CASE WHEN student2ID = ${studentId} THEN NULL ELSE student2ID END`
+        ),
+      },
+      {
+        where: {
+          projectId: projectId,
+        },
+      }
+    );
+    const projectInfo = await db.Implementation.findOne({
+      where: { projectID: projectId },
+      attributes: ["student1ID", "student2ID"],
+      raw: true,
+      nest: true,
+    });
+    if (projectInfo.student1ID === null && projectInfo.student2ID === null) {
+      await db.Project.update(
+        {
+          isRegistered: 0,
+        },
+        {
+          where: {
+            id: projectId,
+          },
+        }
+      );
+    }
+    return {
+      EM: "Unregister project successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    console.log(">>> check error:", error);
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getProjectList,
   createProject,
@@ -537,4 +588,5 @@ module.exports = {
   updateProject,
   getProjectById,
   registerProject,
+  unregisterProject,
 };

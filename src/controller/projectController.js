@@ -136,6 +136,27 @@ const putRegisterProject = async (req, res) => {
   }
 };
 
+const putUnregisterProject = async (req, res) => {
+  try {
+    const unregisterInfo = await ProjectService.unregisterProject(
+      req.query.studentId,
+      req.query.projectId
+    );
+    return res.status(200).json({
+      EM: unregisterInfo.EM,
+      EC: unregisterInfo.EC,
+      DT: unregisterInfo.DT,
+    });
+  } catch (error) {
+    console.log(">>> check error:", error);
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 module.exports = {
   getAllProjects,
   postCreateProject,
@@ -143,4 +164,5 @@ module.exports = {
   putUpdateProject,
   getProjectById,
   putRegisterProject,
+  putUnregisterProject,
 };

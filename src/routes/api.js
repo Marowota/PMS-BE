@@ -53,6 +53,7 @@ const initApiRoutes = (app) => {
   router.delete("/project/delete", projectController.handleDeleteProject);
   router.put("/project/update/:id", projectController.putUpdateProject);
   router.put("/project/register/:id", projectController.putRegisterProject);
+  router.put("/project/unregister", projectController.putUnregisterProject);
 
   //--------------------------------------------------------------------------------------------------------------
 
