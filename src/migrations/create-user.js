@@ -21,6 +21,9 @@ module.exports = {
       phone: {
         type: Sequelize.STRING,
       },
+      avatarLink: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
