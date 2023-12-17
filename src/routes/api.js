@@ -33,6 +33,8 @@ const initApiRoutes = (app) => {
 
   // classInfo
   router.get("/classInfo/read", classInfoControler.getAllClass);
+  router.post("/classInfo/create", classInfoControler.postNewClass);
+  router.delete("/classInfo/delete", classInfoControler.handleDeleteClass);
 
   //--------------------------------------------------------------------------------------------------------------
 

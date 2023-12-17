@@ -86,7 +86,13 @@ const getProjectById = async (projectId) => {
   }
 };
 
-const getProjectList = async () => {
+const getProjectList = async (teacherId) => {
+  ///--------------
+  let teacherWhereObject = {};
+  if (teacherId) {
+    teacherWhereObject = { "$Teacher.User.id$": teacherId };
+  }
+  ///--------------
   try {
     let projectList = await db.Project.findAll({
       include: [
@@ -97,7 +103,7 @@ const getProjectList = async () => {
           include: {
             model: db.User,
             required: false,
-            attributes: ["name", "email", "phone"],
+            attributes: ["id", "name", "email", "phone"],
           },
         },
         {
@@ -128,6 +134,7 @@ const getProjectList = async () => {
           ],
         },
       ],
+      where: [teacherWhereObject],
       attributes: [
         "id",
         "name",
@@ -154,8 +161,19 @@ const getProjectList = async () => {
   }
 };
 
-const getProjectWithPagination = async (page, limit, search = "") => {
+const getProjectWithPagination = async (
+  page,
+  limit,
+  search = "",
+  teacherId = null
+) => {
   try {
+    ///--------------
+    let teacherWhereObject = {};
+    if (teacherId) {
+      teacherWhereObject = { "$Teacher.User.id$": teacherId };
+    }
+    ///--------------
     let offset = (page - 1) * limit;
     const { count, rows } = await db.Project.findAndCountAll({
       include: [
@@ -166,7 +184,7 @@ const getProjectWithPagination = async (page, limit, search = "") => {
           include: {
             model: db.User,
             required: false,
-            attributes: ["name", "email", "phone"],
+            attributes: ["id", "name", "email", "phone"],
           },
         },
         {
@@ -197,13 +215,16 @@ const getProjectWithPagination = async (page, limit, search = "") => {
           ],
         },
       ],
-      where: {
-        [db.Sequelize.col("Project.name")]: Sequelize.where(
-          Sequelize.fn("LOWER", Sequelize.col("Project.name")),
-          "LIKE",
-          "%" + search + "%"
-        ),
-      },
+      where: [
+        {
+          [db.Sequelize.col("Project.name")]: Sequelize.where(
+            Sequelize.fn("LOWER", Sequelize.col("Project.name")),
+            "LIKE",
+            "%" + search + "%"
+          ),
+        },
+        teacherWhereObject,
+      ],
       attributes: [
         "id",
         "name",
@@ -231,6 +252,7 @@ const getProjectWithPagination = async (page, limit, search = "") => {
       DT: data,
     };
   } catch (error) {
+    console.log(error);
     return {
       EM: "There are something wrong in the server's services",
       EC: -1,
