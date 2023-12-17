@@ -8,7 +8,7 @@ const getUserByID = async (userId) => {
         where: {
           id: userId,
         },
-        attributes: ["email", "name", "phone", "dateOfBirth"],
+        attributes: ["email", "name", "phone", "dateOfBirth", "avatarLink"],
       },
       attributes: ["id", "role", "username"],
     });
@@ -50,4 +50,25 @@ const getUserByID = async (userId) => {
   }
 };
 
-module.exports = { getUserByID };
+const updateUserById = async (userId, userData) => {
+  try {
+    const data = await db.User.update(
+      { ...userData },
+      { where: { id: userId } }
+    );
+    return {
+      EM: "Update user successfully",
+      EC: 0,
+      DT: data,
+    };
+  } catch (error) {
+    console.log(">>> check error:", error);
+    return {
+      EM: "There is something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
+module.exports = { getUserByID, updateUserById };

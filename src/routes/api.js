@@ -121,6 +121,7 @@ const initApiRoutes = (app) => {
   //--------------------------------------------------------------------------------------------------------------
   //user
   router.get("/user/readById", userController.getUserById);
+  router.put("/user/update/:id", userController.putUpdateUser);
 
   //--------------------------------------------------------------------------------------------------------------
   //student

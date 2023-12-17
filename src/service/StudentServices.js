@@ -41,7 +41,6 @@ const getProjectOfStudent = async (id) => {
       ...projectData.DT,
       score: projectScore.score,
     };
-    console.log(">>> check existingStudent:", existingStudent);
     return {
       EM: "Get user successfully",
       EC: 0,

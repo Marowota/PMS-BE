@@ -552,8 +552,7 @@ const registerProject = async (student, projectId) => {
 
 const unregisterProject = async (studentId, projectId) => {
   try {
-    console.log(">>> studentId: ", studentId, " >>> projectId:", projectId);
-    const unregisterData = await db.Implementation.update(
+    await db.Implementation.update(
       {
         student1ID: db.Sequelize.literal(
           `CASE WHEN student1ID = ${studentId} THEN NULL ELSE student1ID END`
