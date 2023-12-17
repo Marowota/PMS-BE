@@ -6,7 +6,7 @@ const getTeacherList = async () => {
       include: {
         model: db.User,
         required: true,
-        attributes: ["name", "email", "phone"],
+        attributes: ["id", "name", "email", "phone"],
       },
       attributes: ["id", "teacherCode", "faculty", "academicDegree"],
       raw: true,
