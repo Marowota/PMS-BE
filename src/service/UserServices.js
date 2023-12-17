@@ -13,7 +13,7 @@ const getUserByID = async (userId) => {
       attributes: ["id", "role", "username"],
     });
     let data = {};
-    let role = user.role;
+    let role = user?.role;
     switch (role) {
       case "student": {
         data = await db.Student.findOne({
@@ -34,7 +34,7 @@ const getUserByID = async (userId) => {
         break;
       }
     }
-    const userData = { ...user.dataValues, ...data.dataValues, role };
+    const userData = { ...user?.dataValues, ...data.dataValues, role };
     return {
       EM: "Get user successfully",
       EC: 0,
