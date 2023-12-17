@@ -23,7 +23,16 @@ const getAllProjects = async (req, res) => {
       let page = parseInt(req.query.page);
       let limit = parseInt(req.query.limit);
       let data;
-      if (req.query.search) {
+      if (req.query.teacherId) {
+        let teacherId = req.query.teacherId;
+        let search = req.query.search;
+        data = await ProjectService.getProjectWithPagination(
+          page,
+          limit,
+          search,
+          teacherId
+        );
+      } else if (req.query.search) {
         let search = req.query.search;
         data = await ProjectService.getProjectWithPagination(
           page,
@@ -39,7 +48,13 @@ const getAllProjects = async (req, res) => {
         DT: data.DT,
       });
     } else {
-      const projects = await ProjectService.getProjectList();
+      let projects;
+      if (req.query.teacherId) {
+        let teacherId = req.query.teacherId;
+        projects = await ProjectService.getProjectList(teacherId);
+      } else {
+        projects = await ProjectService.getProjectList();
+      }
       return res.status(200).json({
         EM: projects.EM,
         EC: projects.EC,
