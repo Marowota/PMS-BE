@@ -165,7 +165,8 @@ const getProjectWithPagination = async (
   page,
   limit,
   search = "",
-  teacherId = null
+  teacherId = null,
+  timeId = null
 ) => {
   try {
     ///--------------
@@ -173,7 +174,24 @@ const getProjectWithPagination = async (
     if (teacherId) {
       teacherWhereObject = { "$Teacher.User.id$": teacherId };
     }
-    ///--------------
+    let timeWhereObject = {};
+    if (timeId) {
+      if (timeId === "#NotSetted") {
+        const result = await db.RegisterTime.findAll();
+        const timeIds = result.map((timeValue) => {
+          return timeValue.id;
+        });
+        console.log("timeid", timeIds);
+        timeWhereObject = {
+          registerTimeID: {
+            [Op.or]: [{ [Op.notIn]: timeIds }, { [Op.is]: null }],
+          },
+        };
+      } else {
+        timeWhereObject = { registerTimeID: timeId };
+      }
+    }
+    ///----------------
     let offset = (page - 1) * limit;
     const { count, rows } = await db.Project.findAndCountAll({
       include: [
@@ -224,6 +242,7 @@ const getProjectWithPagination = async (
           ),
         },
         teacherWhereObject,
+        timeWhereObject,
       ],
       attributes: [
         "id",

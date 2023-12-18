@@ -22,6 +22,7 @@ const getAllProjects = async (req, res) => {
     if (req.query.page && req.query.limit) {
       let page = parseInt(req.query.page);
       let limit = parseInt(req.query.limit);
+      let timeId = req.query.timeId === "" ? null : req.query.timeId;
       let data;
       if (req.query.teacherId) {
         let teacherId = req.query.teacherId;
@@ -30,17 +31,26 @@ const getAllProjects = async (req, res) => {
           page,
           limit,
           search,
-          teacherId
+          teacherId,
+          timeId
         );
       } else if (req.query.search) {
         let search = req.query.search;
         data = await ProjectService.getProjectWithPagination(
           page,
           limit,
-          search
+          search,
+          null,
+          timeId
         );
       } else {
-        data = await ProjectService.getProjectWithPagination(page, limit);
+        data = await ProjectService.getProjectWithPagination(
+          page,
+          limit,
+          "",
+          null,
+          timeId
+        );
       }
       return res.status(200).json({
         EM: data.EM,
