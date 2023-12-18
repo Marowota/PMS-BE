@@ -22,36 +22,17 @@ const getAllProjects = async (req, res) => {
     if (req.query.page && req.query.limit) {
       let page = parseInt(req.query.page);
       let limit = parseInt(req.query.limit);
+      let search = req.query.search;
+      let teacherId = req.query.teacherId;
       let timeId = req.query.timeId === "" ? null : req.query.timeId;
-      let data;
-      if (req.query.teacherId) {
-        let teacherId = req.query.teacherId;
-        let search = req.query.search;
-        data = await ProjectService.getProjectWithPagination(
-          page,
-          limit,
-          search,
-          teacherId,
-          timeId
-        );
-      } else if (req.query.search) {
-        let search = req.query.search;
-        data = await ProjectService.getProjectWithPagination(
-          page,
-          limit,
-          search,
-          null,
-          timeId
-        );
-      } else {
-        data = await ProjectService.getProjectWithPagination(
-          page,
-          limit,
-          "",
-          null,
-          timeId
-        );
-      }
+
+      let data = await ProjectService.getProjectWithPagination({
+        page,
+        limit,
+        search,
+        teacherId,
+        timeId,
+      });
       return res.status(200).json({
         EM: data.EM,
         EC: data.EC,
@@ -60,12 +41,8 @@ const getAllProjects = async (req, res) => {
     } else {
       let projects;
       let timeId = req.query.timeId === "" ? null : req.query.timeId;
-      if (req.query.teacherId) {
-        let teacherId = req.query.teacherId;
-        projects = await ProjectService.getProjectList(teacherId, timeId);
-      } else {
-        projects = await ProjectService.getProjectList(null, timeId);
-      }
+      let teacherId = req.query.teacherId;
+      projects = await ProjectService.getProjectList({ teacherId, timeId });
       return res.status(200).json({
         EM: projects.EM,
         EC: projects.EC,
@@ -73,6 +50,7 @@ const getAllProjects = async (req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       EM: "Internal Server Error",
       EC: -1,

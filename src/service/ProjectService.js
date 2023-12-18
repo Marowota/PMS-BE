@@ -86,7 +86,7 @@ const getProjectById = async (projectId) => {
   }
 };
 
-const getProjectList = async (teacherId, timeId = null) => {
+const getProjectList = async ({ teacherId, timeId = null }) => {
   ///--------------
   let teacherWhereObject = {};
   if (teacherId) {
@@ -180,13 +180,13 @@ const getProjectList = async (teacherId, timeId = null) => {
   }
 };
 
-const getProjectWithPagination = async (
+const getProjectWithPagination = async ({
   page,
   limit,
   search = "",
   teacherId = null,
-  timeId = null
-) => {
+  timeId = null,
+}) => {
   try {
     ///--------------
     let teacherWhereObject = {};
