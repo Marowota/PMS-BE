@@ -25,6 +25,7 @@ const getAllProjects = async (req, res) => {
       let search = req.query.search;
       let teacherId = req.query.teacherId;
       let timeId = req.query.timeId === "" ? null : req.query.timeId;
+      let isStudent = req.query.isStudent;
 
       let data = await ProjectService.getProjectWithPagination({
         page,
@@ -32,6 +33,7 @@ const getAllProjects = async (req, res) => {
         search,
         teacherId,
         timeId,
+        isStudent,
       });
       return res.status(200).json({
         EM: data.EM,

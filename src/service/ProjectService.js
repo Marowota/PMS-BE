@@ -186,9 +186,11 @@ const getProjectWithPagination = async ({
   search = "",
   teacherId = null,
   timeId = null,
+  isStudent = false,
 }) => {
   try {
     ///--------------
+
     let teacherWhereObject = {};
     if (teacherId) {
       teacherWhereObject = { "$Teacher.User.id$": teacherId };
@@ -211,6 +213,19 @@ const getProjectWithPagination = async ({
         timeWhereObject = { registerTimeID: timeId };
       }
     }
+
+    let inRegisterTimeWhereObject = {};
+    if (isStudent) {
+      let now = Date.now() + 7 * 60 * 60 * 1000;
+      let current = new Date(now);
+      inRegisterTimeWhereObject = {
+        [Op.and]: [
+          { "$RegisterTime.start$": { [Op.lte]: current } },
+          { "$RegisterTime.end$": { [Op.gte]: current } },
+        ],
+      };
+    }
+
     ///----------------
     let offset = (page - 1) * limit;
     const { count, rows } = await db.Project.findAndCountAll({
@@ -252,6 +267,7 @@ const getProjectWithPagination = async ({
             },
           ],
         },
+        { model: db.RegisterTime },
       ],
       where: [
         {
@@ -263,6 +279,7 @@ const getProjectWithPagination = async ({
         },
         teacherWhereObject,
         timeWhereObject,
+        inRegisterTimeWhereObject,
       ],
       attributes: [
         "id",
