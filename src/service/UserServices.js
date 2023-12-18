@@ -33,6 +33,14 @@ const getUserByID = async (userId) => {
         });
         break;
       }
+      case "aa": {
+        data = await db.AcademicAffair.findOne({
+          where: {
+            userID: userId,
+          },
+        });
+        break;
+      }
     }
     const userData = { ...user?.dataValues, ...data.dataValues, role };
     return {

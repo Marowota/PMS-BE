@@ -344,6 +344,19 @@ const deleteProject = async (projectIds) => {
     };
   } else {
     try {
+      let result = await db.Project.findOne({
+        where: {
+          id: {
+            [Op.in]: projectIds,
+          },
+        },
+      });
+      if (result.isRegistered)
+        return {
+          EM: "Project is registered, cant delete",
+          EC: 1,
+          DT: "",
+        };
       await db.Project.destroy({
         where: {
           id: {
@@ -600,6 +613,96 @@ const unregisterProject = async (studentId, projectId) => {
   }
 };
 
+const getAllTime = async () => {
+  try {
+    const result = await db.RegisterTime.findAll();
+    return {
+      EM: "Create time successfully",
+      EC: 0,
+      DT: result,
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
+const createTime = async (rawData) => {
+  try {
+    console.log(rawData);
+    const result = await db.RegisterTime.create({
+      start: rawData.newStart + ":00.000Z",
+      end: rawData.newEnd + ":00.000Z",
+      faculty: rawData.faculty,
+      year: rawData.newYear,
+      semester: rawData.newSemester,
+    });
+
+    return {
+      EM: "Create time successfully",
+      EC: 0,
+      DT: result,
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+const updateTime = async (rawData) => {
+  try {
+    console.log(rawData);
+    const result = await db.RegisterTime.update(
+      {
+        start: rawData.newStart + ":00.000Z",
+        end: rawData.newEnd + ":00.000Z",
+        faculty: rawData.faculty,
+        year: rawData.newYear,
+        semester: rawData.newSemester,
+      },
+      { where: { id: rawData.id } }
+    );
+
+    return {
+      EM: "Create time successfully",
+      EC: 0,
+      DT: result,
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
+const deleteTime = async (id) => {
+  try {
+    await db.RegisterTime.destroy({
+      where: {
+        id: id,
+      },
+    });
+    return {
+      EM: "Delete time successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getProjectList,
   createProject,
@@ -610,4 +713,8 @@ module.exports = {
   getProjectById,
   registerProject,
   unregisterProject,
+  getAllTime,
+  createTime,
+  updateTime,
+  deleteTime,
 };

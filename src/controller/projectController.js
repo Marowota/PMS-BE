@@ -172,6 +172,74 @@ const putUnregisterProject = async (req, res) => {
   }
 };
 
+const getAllTime = async (req, res) => {
+  try {
+    let data = await ProjectService.getAllTime();
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
+const postCreateTime = async (req, res) => {
+  try {
+    let timeData = await ProjectService.createTime(req.body);
+    return res.status(200).json({
+      EM: timeData.EM,
+      EC: timeData.EC,
+      DT: timeData.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
+const putUpdateTime = async (req, res) => {
+  try {
+    let timeData = await ProjectService.updateTime(req.body);
+    return res.status(200).json({
+      EM: timeData.EM,
+      EC: timeData.EC,
+      DT: timeData.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
+const handleDeleteTime = async (req, res) => {
+  try {
+    let deleteInfo = await ProjectService.deleteTime(req.body.id);
+    return res.status(200).json({
+      EM: deleteInfo.EM,
+      EC: deleteInfo.EC,
+      DT: deleteInfo.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 module.exports = {
   getAllProjects,
   postCreateProject,
@@ -180,4 +248,8 @@ module.exports = {
   getProjectById,
   putRegisterProject,
   putUnregisterProject,
+  getAllTime,
+  postCreateTime,
+  putUpdateTime,
+  handleDeleteTime,
 };
