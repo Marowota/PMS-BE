@@ -59,11 +59,12 @@ const getAllProjects = async (req, res) => {
       });
     } else {
       let projects;
+      let timeId = req.query.timeId === "" ? null : req.query.timeId;
       if (req.query.teacherId) {
         let teacherId = req.query.teacherId;
-        projects = await ProjectService.getProjectList(teacherId);
+        projects = await ProjectService.getProjectList(teacherId, timeId);
       } else {
-        projects = await ProjectService.getProjectList();
+        projects = await ProjectService.getProjectList(null, timeId);
       }
       return res.status(200).json({
         EM: projects.EM,

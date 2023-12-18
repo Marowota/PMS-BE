@@ -86,11 +86,29 @@ const getProjectById = async (projectId) => {
   }
 };
 
-const getProjectList = async (teacherId) => {
+const getProjectList = async (teacherId, timeId = null) => {
   ///--------------
   let teacherWhereObject = {};
   if (teacherId) {
     teacherWhereObject = { "$Teacher.User.id$": teacherId };
+  }
+
+  let timeWhereObject = {};
+  if (timeId) {
+    if (timeId === "#NotSetted") {
+      const result = await db.RegisterTime.findAll();
+      const timeIds = result.map((timeValue) => {
+        return timeValue.id;
+      });
+      //console.log("timeid", timeIds);
+      timeWhereObject = {
+        registerTimeID: {
+          [Op.or]: [{ [Op.notIn]: timeIds }, { [Op.is]: null }],
+        },
+      };
+    } else {
+      timeWhereObject = { registerTimeID: timeId };
+    }
   }
   ///--------------
   try {
@@ -134,7 +152,7 @@ const getProjectList = async (teacherId) => {
           ],
         },
       ],
-      where: [teacherWhereObject],
+      where: [teacherWhereObject, timeWhereObject],
       attributes: [
         "id",
         "name",
@@ -145,6 +163,7 @@ const getProjectList = async (teacherId) => {
       ],
       raw: true,
       nest: true,
+      order: [["id", "DESC"]],
     });
     return {
       EM: "Get project list successfully",
@@ -174,6 +193,7 @@ const getProjectWithPagination = async (
     if (teacherId) {
       teacherWhereObject = { "$Teacher.User.id$": teacherId };
     }
+
     let timeWhereObject = {};
     if (timeId) {
       if (timeId === "#NotSetted") {
@@ -181,7 +201,7 @@ const getProjectWithPagination = async (
         const timeIds = result.map((timeValue) => {
           return timeValue.id;
         });
-        console.log("timeid", timeIds);
+        //console.log("timeid", timeIds);
         timeWhereObject = {
           registerTimeID: {
             [Op.or]: [{ [Op.notIn]: timeIds }, { [Op.is]: null }],
@@ -256,6 +276,7 @@ const getProjectWithPagination = async (
       nest: true,
       offset: offset,
       limit: limit,
+      order: [["id", "DESC"]],
     });
 
     let totalPage = Math.ceil(count / limit);
