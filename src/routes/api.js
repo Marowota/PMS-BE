@@ -60,6 +60,7 @@ const initApiRoutes = (app) => {
   router.post("/project/create-time", projectController.postCreateTime);
   router.put("/project/update-time/:id", projectController.putUpdateTime);
   router.delete("/project/delete-time", projectController.handleDeleteTime);
+  router.put("/project/set-project-time", projectController.putSetProjectTime);
 
   //--------------------------------------------------------------------------------------------------------------
 

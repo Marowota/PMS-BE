@@ -703,6 +703,32 @@ const deleteTime = async (id) => {
   }
 };
 
+const setProjectTime = async (rawData) => {
+  try {
+    let projectIds = rawData.selectedProject.map((project) => {
+      return project.id;
+    });
+    console.log("project id:", projectIds);
+    console.log("time id:", rawData.timeId);
+
+    await db.Project.update(
+      { registerTimeID: rawData.timeId },
+      { where: { id: projectIds } }
+    );
+    return {
+      EM: "Create time successfully",
+      EC: 0,
+      DT: result,
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getProjectList,
   createProject,
@@ -717,4 +743,5 @@ module.exports = {
   createTime,
   updateTime,
   deleteTime,
+  setProjectTime,
 };

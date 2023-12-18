@@ -240,6 +240,23 @@ const handleDeleteTime = async (req, res) => {
   }
 };
 
+const putSetProjectTime = async (req, res) => {
+  try {
+    let timeData = await ProjectService.setProjectTime(req.body);
+    return res.status(200).json({
+      EM: timeData.EM,
+      EC: timeData.EC,
+      DT: timeData.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 module.exports = {
   getAllProjects,
   postCreateProject,
@@ -252,4 +269,5 @@ module.exports = {
   postCreateTime,
   putUpdateTime,
   handleDeleteTime,
+  putSetProjectTime,
 };
