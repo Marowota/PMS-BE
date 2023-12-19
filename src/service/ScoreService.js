@@ -58,7 +58,15 @@ const getScoreList = async (timeId = null) => {
           attributes: ["name", "type", "faculty"],
         },
       ],
-      where: [timeWhereObject],
+      where: [
+        {
+          [Op.or]: [
+            { student1ID: { [Op.ne]: null } },
+            { student2ID: { [Op.ne]: null } },
+          ],
+        },
+        timeWhereObject,
+      ],
       attributes: ["id", "score", "isCompleted"],
       raw: true,
       nest: true,
