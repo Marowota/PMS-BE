@@ -7,13 +7,15 @@ const getAllScore = async (req, res) => {
       let limit = parseInt(req.query.limit);
       let search = req.query.search;
       let timeId = req.query.timeId;
+      let teacherUserId = req.query.teacherUserId;
 
-      const data = await ScoreService.getScorePagination(
+      const data = await ScoreService.getScorePagination({
         page,
         limit,
         search,
-        timeId
-      );
+        timeId,
+        teacherUserId,
+      });
       return res.status(200).json({
         EM: data.EM,
         EC: data.EC,
@@ -21,7 +23,8 @@ const getAllScore = async (req, res) => {
       });
     } else {
       let timeId = req.query.timeId;
-      const score = await ScoreService.getScoreList(timeId);
+      let teacherUserId = req.query.teacherUserId;
+      const score = await ScoreService.getScoreList({ timeId, teacherUserId });
       return res.status(200).json({
         EM: score.EM,
         EC: score.EC,

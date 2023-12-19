@@ -86,11 +86,11 @@ const getProjectById = async (projectId) => {
   }
 };
 
-const getProjectList = async ({ teacherId, timeId = null }) => {
+const getProjectList = async ({ teacherUserId, timeId = null }) => {
   ///--------------
   let teacherWhereObject = {};
-  if (teacherId) {
-    teacherWhereObject = { "$Teacher.User.id$": teacherId };
+  if (teacherUserId) {
+    teacherWhereObject = { "$Teacher.User.id$": teacherUserId };
   }
 
   let timeWhereObject = {};
@@ -184,7 +184,7 @@ const getProjectWithPagination = async ({
   page,
   limit,
   search = "",
-  teacherId = null,
+  teacherUserId = null,
   timeId = null,
   isStudent = false,
 }) => {
@@ -192,8 +192,8 @@ const getProjectWithPagination = async ({
     ///--------------
 
     let teacherWhereObject = {};
-    if (teacherId) {
-      teacherWhereObject = { "$Teacher.User.id$": teacherId };
+    if (teacherUserId) {
+      teacherWhereObject = { "$Teacher.User.id$": teacherUserId };
     }
 
     let timeWhereObject = {};

@@ -23,7 +23,7 @@ const getAllProjects = async (req, res) => {
       let page = parseInt(req.query.page);
       let limit = parseInt(req.query.limit);
       let search = req.query.search;
-      let teacherId = req.query.teacherId;
+      let teacherUserId = req.query.teacherUserId;
       let timeId = req.query.timeId === "" ? null : req.query.timeId;
       let isStudent = req.query.isStudent;
 
@@ -31,7 +31,7 @@ const getAllProjects = async (req, res) => {
         page,
         limit,
         search,
-        teacherId,
+        teacherUserId,
         timeId,
         isStudent,
       });
@@ -43,8 +43,8 @@ const getAllProjects = async (req, res) => {
     } else {
       let projects;
       let timeId = req.query.timeId === "" ? null : req.query.timeId;
-      let teacherId = req.query.teacherId;
-      projects = await ProjectService.getProjectList({ teacherId, timeId });
+      let teacherUserId = req.query.teacherUserId;
+      projects = await ProjectService.getProjectList({ teacherUserId, timeId });
       return res.status(200).json({
         EM: projects.EM,
         EC: projects.EC,

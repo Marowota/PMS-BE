@@ -1,9 +1,13 @@
 import db from "../models/index";
 import { Sequelize, Op } from "sequelize";
-const getScoreList = async (timeId = null) => {
+const getScoreList = async ({ timeId = null, teacherUserId = null }) => {
   try {
-    let timeWhereObject = {};
+    let teacherWhereObject = {};
+    if (teacherUserId) {
+      teacherWhereObject = { "$Project.Teacher.User.id$": teacherUserId };
+    }
 
+    let timeWhereObject = {};
     if (timeId) {
       if (timeId === "#NotSetted") {
         const result = await db.RegisterTime.findAll();
@@ -66,6 +70,7 @@ const getScoreList = async (timeId = null) => {
           ],
         },
         timeWhereObject,
+        teacherWhereObject,
       ],
       attributes: ["id", "score", "isCompleted"],
       raw: true,
@@ -123,10 +128,20 @@ const getScoreById = async (id) => {
   }
 };
 
-const getScorePagination = async (page, limit, search = "", timeId = null) => {
+const getScorePagination = async ({
+  page,
+  limit,
+  search = "",
+  timeId = null,
+  teacherUserId = null,
+}) => {
   try {
-    let timeWhereObject = {};
+    let teacherWhereObject = {};
+    if (teacherUserId) {
+      teacherWhereObject = { "$Project.Teacher.User.id$": teacherUserId };
+    }
 
+    let timeWhereObject = {};
     if (timeId) {
       if (timeId === "#NotSetted") {
         const result = await db.RegisterTime.findAll();
@@ -205,6 +220,7 @@ const getScorePagination = async (page, limit, search = "", timeId = null) => {
             ],
           },
           timeWhereObject,
+          teacherWhereObject,
         ],
       },
       attributes: ["id", "score", "isCompleted"],
