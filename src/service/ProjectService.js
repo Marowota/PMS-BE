@@ -518,12 +518,6 @@ const registerProject = async (student, projectId) => {
       };
     }
 
-    //wrong logic ?????
-    if (registerData) {
-      await registerData.update({
-        isRegistered: 1,
-      });
-    }
     try {
       let projectIsFull = await db.Implementation.findOne({
         where: {
@@ -611,6 +605,11 @@ const registerProject = async (student, projectId) => {
               where: { projectID: projectId },
             }
           );
+        }
+        if (registerData) {
+          await registerData.update({
+            isRegistered: 1,
+          });
         }
         return {
           EM: "Register project successfully",
