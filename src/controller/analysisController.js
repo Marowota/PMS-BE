@@ -1,5 +1,23 @@
 import analysisService from "../service/AnalysisService";
 
+const getStudentsByTeacher = async (req, res) => {
+  try {
+    const data = await analysisService.getStudentByTeacher();
+    return res.status(200).json({
+      EM: data.EM,
+      EC: data.EC,
+      DT: data.DT,
+    });
+  } catch (error) {
+    console.log(">>> check error:", error);
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 const getProjectjAndStudent = async (req, res) => {
   try {
     const data = await analysisService.getProjectjAndStudentByTeacher();
@@ -120,6 +138,7 @@ const getHighestAverageScore = async (req, res) => {
 };
 
 module.exports = {
+  getStudentsByTeacher,
   getProjectjAndStudent,
   getTheMostProject,
   getTheMostStudent,

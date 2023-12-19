@@ -12,7 +12,17 @@ const getProjectOfStudent = async (id) => {
       raw: true,
       nest: true,
     });
-    const studentId = findStudentId.id;
+
+    if (findStudentId === null) {
+      return {
+        EM: "Can not find student with this id!",
+        EC: 0,
+        DT: "",
+      };
+    }
+
+    let studentId = findStudentId.id;
+
     let existingStudent = await db.Implementation.findOne({
       where: {
         [Op.or]: [{ student1ID: studentId }, { student2ID: studentId }],

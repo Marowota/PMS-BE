@@ -100,6 +100,7 @@ const initApiRoutes = (app) => {
   //--------------------------------------------------------------------------------------------------------------
 
   //analysis
+  router.get("/analysis/readStudent", analysisController.getStudentsByTeacher);
   router.get(
     "/analysis/readStudentAndProject",
     analysisController.getProjectjAndStudent

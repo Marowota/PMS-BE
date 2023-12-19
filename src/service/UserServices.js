@@ -60,14 +60,15 @@ const getUserByID = async (userId) => {
 
 const updateUserById = async (userId, userData) => {
   try {
-    const data = await db.User.update(
-      { ...userData },
-      { where: { id: userId } }
+    await db.User.update({ ...userData }, { where: { id: userId } });
+    await db.Account.update(
+      { username: userData.username },
+      { where: { userID: userId } }
     );
     return {
       EM: "Update user successfully",
       EC: 0,
-      DT: data,
+      DT: "",
     };
   } catch (error) {
     console.log(">>> check error:", error);
