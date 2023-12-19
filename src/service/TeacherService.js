@@ -88,13 +88,30 @@ const getAnalysisOfTeacher = async (teacherId) => {
       },
       raw: true,
     });
+    const scores = await db.Implementation.findAll({
+      attributes: ["score"],
+      include: {
+        model: db.Project,
+        required: true,
+        where: {
+          teacherID: teacherId,
+        },
+        attributes: [],
+      },
+      order: [["score", "DESC"]],
+      raw: true,
+    });
+
+    const middleElement = Math.floor(scores.length / 2);
+    const medianStudentScore = scores[middleElement];
 
     const data = {
       projectCount,
       totalStudentCount,
       registeredProjectsCount,
       unregisteredProjectsCount,
-      averageStudentScore,
+      avgStudentScore: averageStudentScore.score,
+      medianStudentScore: medianStudentScore.score,
     };
 
     return {
