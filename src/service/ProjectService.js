@@ -494,9 +494,31 @@ const updateProject = async (project, projectId) => {
 
 const registerProject = async (student, projectId) => {
   try {
+    let inRegisterTimeWhereObject = {};
+    let now = Date.now() + 7 * 60 * 60 * 1000;
+    let current = new Date(now);
     const registerData = await db.Project.findOne({
-      where: { id: projectId },
+      include: [{ model: db.RegisterTime }],
+      where: [{ id: projectId }],
     });
+
+    if (registerData?.RegisterTime?.start > now) {
+      return {
+        EM: "This project not open yet for register",
+        EC: 1,
+        DT: "",
+      };
+    }
+    if (registerData?.RegisterTime?.end < now) {
+      console.log("in");
+      return {
+        EM: "This project has closed for register",
+        EC: 1,
+        DT: "",
+      };
+    }
+
+    //wrong logic ?????
     if (registerData) {
       await registerData.update({
         isRegistered: 1,
