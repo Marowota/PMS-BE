@@ -26,6 +26,93 @@ const getTeacherList = async () => {
   }
 };
 
+const getAnalysisOfTeacher = async (teacherId) => {
+  try {
+    const projectCount = await db.Project.count({
+      where: {
+        teacherID: teacherId,
+      },
+    });
+
+    const studentCount1 = await db.Implementation.count({
+      distinct: true,
+      col: "student1ID",
+      include: {
+        model: db.Project,
+        required: true,
+        where: {
+          teacherID: teacherId,
+        },
+        attributes: [],
+      },
+    });
+
+    const studentCount2 = await db.Implementation.count({
+      distinct: true,
+      col: "student2ID",
+      include: {
+        model: db.Project,
+        required: true,
+        where: {
+          teacherID: teacherId,
+        },
+        attributes: [],
+      },
+    });
+
+    const totalStudentCount = studentCount1 + studentCount2;
+
+    const registeredProjectsCount = await db.Project.count({
+      where: {
+        teacherID: teacherId,
+        isRegistered: 1,
+      },
+    });
+
+    const unregisteredProjectsCount = await db.Project.count({
+      where: {
+        teacherID: teacherId,
+        isRegistered: 0,
+      },
+    });
+
+    const averageStudentScore = await db.Implementation.findOne({
+      attributes: [[db.Sequelize.literal(`ROUND(AVG(score), 1)`), "score"]],
+      include: {
+        model: db.Project,
+        required: true,
+        where: {
+          teacherID: teacherId,
+        },
+        attributes: [],
+      },
+      raw: true,
+    });
+
+    const data = {
+      projectCount,
+      totalStudentCount,
+      registeredProjectsCount,
+      unregisteredProjectsCount,
+      averageStudentScore,
+    };
+
+    return {
+      EM: "Get analysis of teacher successfully",
+      EC: 0,
+      DT: data,
+    };
+  } catch (error) {
+    console.log(">>> check error:", error);
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
 module.exports = {
   getTeacherList,
+  getAnalysisOfTeacher,
 };

@@ -66,6 +66,10 @@ const initApiRoutes = (app) => {
 
   //teacher
   router.get("/teacher/read", teacherController.getAllTeacher);
+  router.get(
+    "/teacher/readAnalysisData",
+    teacherController.getAnalysisDataOfTeacher
+  );
 
   //--------------------------------------------------------------------------------------------------------------
 

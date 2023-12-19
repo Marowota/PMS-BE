@@ -452,7 +452,10 @@ const teacherAverageScore = async () => {
     const teachers = await db.Implementation.findAll({
       attributes: [
         [db.Sequelize.col("Project.Teacher.User.name"), "Teacher's name"],
-        [db.Sequelize.literal(`ROUND(AVG(score), 1)`), "Average score"],
+        [
+          db.Sequelize.literal(`ROUND(AVG(score), 1)`),
+          "Average student's score",
+        ],
       ],
       include: [
         {
