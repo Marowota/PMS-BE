@@ -1,7 +1,26 @@
 import db from "../models/index";
 import { Sequelize, Op } from "sequelize";
-const getScoreList = async () => {
+const getScoreList = async (timeId = null) => {
   try {
+    let timeWhereObject = {};
+
+    if (timeId) {
+      if (timeId === "#NotSetted") {
+        const result = await db.RegisterTime.findAll();
+        const timeIds = result.map((timeValue) => {
+          return timeValue.id;
+        });
+        //console.log("timeid", timeIds);
+        timeWhereObject = {
+          "$Project.registerTimeID$": {
+            [Op.or]: [{ [Op.notIn]: timeIds }, { [Op.is]: null }],
+          },
+        };
+      } else {
+        timeWhereObject = { "$Project.registerTimeID$": timeId };
+      }
+    }
+
     let scoreList = await db.Implementation.findAll({
       include: [
         {
@@ -39,6 +58,7 @@ const getScoreList = async () => {
           attributes: ["name", "type", "faculty"],
         },
       ],
+      where: [timeWhereObject],
       attributes: ["id", "score", "isCompleted"],
       raw: true,
       nest: true,
@@ -95,8 +115,27 @@ const getScoreById = async (id) => {
   }
 };
 
-const getScorePagination = async (page, limit, search = "") => {
+const getScorePagination = async (page, limit, search = "", timeId = null) => {
   try {
+    let timeWhereObject = {};
+
+    if (timeId) {
+      if (timeId === "#NotSetted") {
+        const result = await db.RegisterTime.findAll();
+        const timeIds = result.map((timeValue) => {
+          return timeValue.id;
+        });
+        //console.log("timeid", timeIds);
+        timeWhereObject = {
+          "$Project.registerTimeID$": {
+            [Op.or]: [{ [Op.notIn]: timeIds }, { [Op.is]: null }],
+          },
+        };
+      } else {
+        timeWhereObject = { "$Project.registerTimeID$": timeId };
+      }
+    }
+
     let offset = (page - 1) * limit;
     const { count, rows } = await db.Implementation.findAndCountAll({
       include: [
@@ -157,6 +196,7 @@ const getScorePagination = async (page, limit, search = "") => {
               { student2ID: { [Op.ne]: null } },
             ],
           },
+          timeWhereObject,
         ],
       },
       attributes: ["id", "score", "isCompleted"],

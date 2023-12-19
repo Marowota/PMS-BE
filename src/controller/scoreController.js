@@ -5,20 +5,23 @@ const getAllScore = async (req, res) => {
     if (req.query.page && req.query.limit) {
       let page = parseInt(req.query.page);
       let limit = parseInt(req.query.limit);
-      let data;
-      if (req.query.search) {
-        let search = req.query.search;
-        data = await ScoreService.getScorePagination(page, limit, search);
-      } else {
-        data = await ScoreService.getScorePagination(page, limit);
-      }
+      let search = req.query.search;
+      let timeId = req.query.timeId;
+
+      const data = await ScoreService.getScorePagination(
+        page,
+        limit,
+        search,
+        timeId
+      );
       return res.status(200).json({
         EM: data.EM,
         EC: data.EC,
         DT: data.DT,
       });
     } else {
-      const score = await ScoreService.getScoreList();
+      let timeId = req.query.timeId;
+      const score = await ScoreService.getScoreList(timeId);
       return res.status(200).json({
         EM: score.EM,
         EC: score.EC,
