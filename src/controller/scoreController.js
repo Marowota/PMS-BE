@@ -91,6 +91,26 @@ const putUpdateScore = async (req, res) => {
   }
 };
 
+const putUpdateSubmitLink = async (req, res) => {
+  try {
+    let updateInfo = await ScoreService.updateSubmitLink(
+      req.params.id,
+      req.body.submitLink
+    );
+    return res.status(200).json({
+      EM: updateInfo.EM,
+      EC: updateInfo.EC,
+      DT: updateInfo.DT,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      EM: "Internal Server Error",
+      EC: -1,
+      DT: "",
+    });
+  }
+};
+
 // const handleDeleteScore = async (req, res) => {
 //   try {
 //     console.log(">>> req.body", req.body);
@@ -113,4 +133,5 @@ module.exports = {
   getAllScore,
   getScoreById,
   putUpdateScore,
+  putUpdateSubmitLink,
 };

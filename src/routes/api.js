@@ -99,6 +99,10 @@ const initApiRoutes = (app) => {
   router.get("/score/readById", scoreController.getScoreById);
   //router.post("/score/create", scoreController.postCreateScore);
   router.put("/score/update/:id", scoreController.putUpdateScore);
+  router.put(
+    "/score/updateSubmitLink/:id",
+    scoreController.putUpdateSubmitLink
+  );
   //router.delete("/score/delete", scoreController.handleDeleteScore);
 
   //--------------------------------------------------------------------------------------------------------------

@@ -72,7 +72,7 @@ const getScoreList = async ({ timeId = null, teacherUserId = null }) => {
         timeWhereObject,
         teacherWhereObject,
       ],
-      attributes: ["id", "score", "isCompleted"],
+      attributes: ["id", "score", "isCompleted", "submissionLink"],
       raw: true,
       nest: true,
     });
@@ -102,7 +102,7 @@ const getScoreById = async (id) => {
     try {
       let score = await db.Implementation.findOne({
         where: { id: id },
-        attributes: ["id", "score", "isCompleted"],
+        attributes: ["id", "score", "isCompleted", "submissionLink"],
         raw: true,
         nest: true,
       });
@@ -223,7 +223,7 @@ const getScorePagination = async ({
           teacherWhereObject,
         ],
       },
-      attributes: ["id", "score", "isCompleted"],
+      attributes: ["id", "score", "isCompleted", "submissionLink"],
       raw: true,
       nest: true,
       offset: offset,
@@ -269,18 +269,35 @@ const getScorePagination = async ({
 //   }
 // };
 
-const updateScore = async (score, implementationId) => {
+const updateScore = async (value, implementationId) => {
   try {
-    const oldImplementation = await db.Implementation.findOne({
-      where: { id: implementationId },
-    });
-    if (oldImplementation) {
-      await oldImplementation.update({
-        score: score,
-      });
-    }
+    await db.Implementation.update(
+      { score: value.score },
+      { where: { id: implementationId } }
+    );
+
     return {
       EM: "Update score successfully",
+      EC: 0,
+      DT: "",
+    };
+  } catch (error) {
+    return {
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    };
+  }
+};
+
+const updateSubmitLink = async (projectId, submitLink) => {
+  try {
+    await db.Implementation.update(
+      { submissionLink: submitLink },
+      { where: { projectID: projectId } }
+    );
+    return {
+      EM: "Update submit link successfully",
       EC: 0,
       DT: "",
     };
@@ -320,4 +337,5 @@ module.exports = {
   getScorePagination,
   getScoreById,
   updateScore,
+  updateSubmitLink,
 };
