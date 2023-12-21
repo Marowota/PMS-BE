@@ -30,7 +30,7 @@ const getAnnouncementList = async () => {
 };
 
 const getAnnouncementById = async (id) => {
-  if (typeof id !== "number")
+  if (typeof id !== "number" || id < 1)
     return {
       EM: "Invalid announcement id",
       EC: 1,
@@ -114,7 +114,7 @@ const getAnnouncementPagination = async (page, limit, search = "") => {
     };
   } catch (error) {
     return {
-      EM: "There is something wrong in the server's services",
+      EM: "There are something wrong in the server's services",
       EC: -1,
       DT: "",
     };

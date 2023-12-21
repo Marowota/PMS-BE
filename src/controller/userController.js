@@ -2,7 +2,7 @@ import userServices from "../service/UserServices";
 
 const getUserById = async (req, res) => {
   try {
-    let data = await userServices.getUserByID(req.query.id);
+    let data = await userServices.getUserByID(+req.query.id);
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,
@@ -26,7 +26,7 @@ const putUpdateUser = async (req, res) => {
     req.params.id
   );
   try {
-    let data = await userServices.updateUserById(req.params.id, req.body);
+    let data = await userServices.updateUserById(+req.params.id, req.body);
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,

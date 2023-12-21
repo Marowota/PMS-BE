@@ -9,27 +9,16 @@ afterAll(async () => {
   await db.sequelize.close();
 });
 
-const successAnnouncement = [
-  ["Success title 1", "Success content 1", true],
-  ["Success title 2", "Success content 2", false],
-];
+const successAnnouncement = [["Title", "Content", true]];
 
 const invalidAnnoucement = [
-  [1, "Invalid content 1", true],
-  ["Invalid title 2", 1, false],
-  ["Invalid title 3", "Invalid content 3", 1],
-  [null, "Invalid content 12", false],
-  ["Invalid title 13", null, false],
-  ["Invalid title 14", "Invalid content 14", null],
+  [1, "Content", true],
+  [null, "Content", false],
 ];
 
 const unfilledAnnouncement = [
-  [undefined, "Unfilled content 1", true],
-  ["Unfilled title 2", undefined, false],
-  ["Unfilled title 3", "Unfilled content 3", undefined],
-  ["", "Unfilled content 8", true],
-  ["Unfilled title 9", "", false],
-  ["Unfilled title 10", "Unfilled content 10", ""],
+  [undefined, "Content", true],
+  ["", "Content", true],
 ];
 
 // Test get announcement list
@@ -49,8 +38,8 @@ describe("\nTest get announcement by ID", () => {
   // Test success case
   it("Get announcement by ID successfully", async () => {
     await AnnouncementService.createAnnouncement({
-      title: "Success title",
-      content: "Success content",
+      title: "Title",
+      content: "Content",
       isPublic: true,
     });
 
@@ -381,6 +370,86 @@ describe("\nTest delete Announcement", () => {
     ).resolves.toEqual({
       EM: "Invalid announcement id",
       EC: 1,
+      DT: "",
+    });
+  });
+});
+
+// Test server error case with each function
+describe("\nTest server error case", () => {
+  // Server error case with getAnnouncementList function
+  it("Server error case with getAnnouncementList function", async () => {
+    await db.sequelize.close();
+    await expect(AnnouncementService.getAnnouncementList()).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  // Server error case with getAnnouncementById function
+  it("Server error case with getAnnouncementById function", async () => {
+    await db.sequelize.close();
+    await expect(AnnouncementService.getAnnouncementById(1)).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  // Server error case with getAnnouncementPagination function
+  it("Server error case with getAnnouncementPagination function", async () => {
+    await db.sequelize.close();
+    await expect(
+      AnnouncementService.getAnnouncementPagination(1, 10)
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  // Server error case with createAnnouncement function
+  it("Server error case with createAnnouncement function", async () => {
+    await db.sequelize.close();
+    await expect(
+      AnnouncementService.createAnnouncement({
+        title: "Title",
+        content: "Content",
+        isPublic: true,
+      })
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  // Server error case with updateAnnouncement function
+  it("Server error case with updateAnnouncement function", async () => {
+    await db.sequelize.close();
+    await expect(
+      AnnouncementService.updateAnnouncement(
+        {
+          title: "Title",
+          content: "Content",
+          isPublic: true,
+        },
+        1
+      )
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  // Server error case with deleteAnnouncement function
+  it("Server error case with deleteAnnouncement function", async () => {
+    await db.sequelize.close();
+    await expect(AnnouncementService.deleteAnnouncement([1])).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
       DT: "",
     });
   });

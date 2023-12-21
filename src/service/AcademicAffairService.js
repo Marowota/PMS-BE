@@ -48,13 +48,7 @@ const getAAById = async (id) => {
     try {
       let aa = await db.AcademicAffair.findOne({
         where: { id: id },
-        attributes: [
-          "id",
-          "academicAffairCode",
-          "faculty",
-          "position",
-          "userID",
-        ],
+        attributes: ["id", "academicAffairCode", "faculty", "userID"],
         nest: true,
         raw: true,
       });
@@ -85,7 +79,7 @@ const getAAById = async (id) => {
 const getAAList = async () => {
   try {
     let aaList = await db.AcademicAffair.findAll({
-      attributes: ["id", "academicAffairCode", "faculty", "position", "userID"],
+      attributes: ["id", "academicAffairCode", "faculty", "userID"],
       raw: true,
       nest: true,
     });
