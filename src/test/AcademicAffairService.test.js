@@ -83,7 +83,7 @@ describe("\nTest get academic affair by id", () => {
       order: [["createdAt", "DESC"]],
       nest: true,
       raw: true,
-      attributes: ["id", "academicAffairCode", "faculty", "position", "userID"],
+      attributes: ["id", "academicAffairCode", "faculty", "userID"],
     });
 
     await expect(AcademicAffairService.getAAById(newAA[0].id)).resolves.toEqual(
@@ -102,6 +102,15 @@ describe("\nTest get academic affair by id", () => {
     await expect(AcademicAffairService.getAAById(100000)).resolves.toEqual({
       EM: "Academic affair not found",
       EC: 11,
+      DT: "",
+    });
+  });
+
+  // Test invalid id case
+  it("Academic affair id is invalid", async () => {
+    await expect(AcademicAffairService.getAAById("abc")).resolves.toEqual({
+      EM: "Academic affair id is invalid",
+      EC: 10,
       DT: "",
     });
   });
@@ -193,6 +202,17 @@ describe("\nTest update academic affair", () => {
       DT: "",
     });
   });
+
+  // Test invalid id case
+  it("Academic affair id is invalid", async () => {
+    await expect(
+      AcademicAffairService.updateAA("abc", "AA001", "FIT", "Dean", 1)
+    ).resolves.toEqual({
+      EM: "Academic affair id is invalid",
+      EC: 10,
+      DT: "",
+    });
+  });
 });
 
 // Test delete academic affair
@@ -221,6 +241,53 @@ describe("\nTest delete academic affair", () => {
     await expect(AcademicAffairService.deleteAA("abc")).resolves.toEqual({
       EM: "Academic affair id is invalid",
       EC: 10,
+      DT: "",
+    });
+  });
+});
+
+describe("Test server error", () => {
+  it("Server error with createAA", async () => {
+    await db.sequelize.close();
+    await expect(
+      AcademicAffairService.createAA("AA001", "FIT", "Dean", 1)
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Server error with getAAById", async () => {
+    await expect(AcademicAffairService.getAAById(1)).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Server error with getAAList", async () => {
+    await expect(AcademicAffairService.getAAList()).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Server error with updateAA", async () => {
+    await expect(
+      AcademicAffairService.updateAA(1, "AA001", "FIT", "Dean", 1)
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Server error with deleteAA", async () => {
+    await expect(AcademicAffairService.deleteAA(1)).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
       DT: "",
     });
   });
