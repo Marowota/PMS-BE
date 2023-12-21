@@ -9,30 +9,22 @@ afterAll(async () => {
   await db.sequelize.close();
 });
 
-const successCase = [
-  ["AA001", "FIT", "Dean", 1],
-  ["AA002", "FIT", "", 2],
-];
+const successCase = [["AA001", "FIT", 1]];
 
 const invalidCase = [
-  [1, "FIT", "Dean", 1],
-  ["AA001", 1, "Dean", 1],
-  ["AA001", "FIT", "Dean", "1"],
-  ["", "FIT", "Dean", 1],
-  ["AA001", "", "Dean", 1],
-  ["AA001", "FIT", "Dean", ""],
+  [1, "FIT", 1],
+  ["", "FIT", 1],
 ];
 
 // Test create academic affair
 describe("Test create academic affair", () => {
   // Test success case
   test.each(successCase)(
-    "Success create academic affair with aacode = %p, faculty = %p, position = %p, userID = %p",
-    async (aacode, faculty, position, userID) => {
+    "Success create academic affair with aacode = %p, faculty = %p, userID = %p",
+    async (aacode, faculty, userID) => {
       const result = await AcademicAffairService.createAA(
         aacode,
         faculty,
-        position,
         userID
       );
       expect(result).toEqual({
@@ -55,12 +47,11 @@ describe("Test create academic affair", () => {
 
   // Test invalid case
   test.each(invalidCase)(
-    "Invalid academic affair information with aacode = %p, faculty = %p, position = %p",
-    async (aacode, faculty, position, userID) => {
+    "Invalid academic affair information with aacode = %p, faculty = %p, userID = %p",
+    async (aacode, faculty, userID) => {
       const result = await AcademicAffairService.createAA(
         aacode,
         faculty,
-        position,
         userID
       );
       expect(result).toEqual({
@@ -76,7 +67,7 @@ describe("Test create academic affair", () => {
 describe("\nTest get academic affair by id", () => {
   // Test success case
   it("Get academic affair by id successfully", async () => {
-    await AcademicAffairService.createAA("AA001", "FIT", "Dean", 1);
+    await AcademicAffairService.createAA("AA001", "FIT", 1);
 
     const newAA = await db.AcademicAffair.findAll({
       limit: 1,
@@ -131,9 +122,9 @@ describe("\nTest get academic affair list", () => {
 describe("\nTest update academic affair", () => {
   // Test success case
   test.each(successCase)(
-    "Success update academic affair with aacode = %p, faculty = %p, position = %p, userID = %p",
-    async (aacode, faculty, position, userID) => {
-      await AcademicAffairService.createAA("AA001", "FIT", "Dean", 1);
+    "Success update academic affair with aacode = %p, faculty = %p, userID = %p",
+    async (aacode, faculty, userID) => {
+      await AcademicAffairService.createAA("AA001", "FIT", 1);
 
       const newAA = await db.AcademicAffair.findAll({
         limit: 1,
@@ -147,7 +138,6 @@ describe("\nTest update academic affair", () => {
         newAA[0].id,
         aacode,
         faculty,
-        position,
         userID
       );
       expect(result).toEqual({
@@ -162,9 +152,9 @@ describe("\nTest update academic affair", () => {
 
   // Test invalid case
   test.each(invalidCase)(
-    "Invalid academic affair information with aacode = %p, faculty = %p, position = %p, userID = %p",
-    async (aacode, faculty, position, userID) => {
-      await AcademicAffairService.createAA("AA001", "FIT", "Dean", 1);
+    "Invalid academic affair information with aacode = %p, faculty = %p, userID = %p",
+    async (aacode, faculty, userID) => {
+      await AcademicAffairService.createAA("AA001", "FIT", 1);
 
       const newAA = await db.AcademicAffair.findAll({
         limit: 1,
@@ -175,13 +165,7 @@ describe("\nTest update academic affair", () => {
       });
 
       await expect(
-        AcademicAffairService.updateAA(
-          newAA[0].id,
-          aacode,
-          faculty,
-          position,
-          userID
-        )
+        AcademicAffairService.updateAA(newAA[0].id, aacode, faculty, userID)
       ).resolves.toEqual({
         EM: "Invalid academic affair information",
         EC: 9,
@@ -195,7 +179,7 @@ describe("\nTest update academic affair", () => {
   // Test not found case
   it("Academic affair not found", async () => {
     expect(
-      AcademicAffairService.updateAA(100000, "AA001", "FIT", "Dean", 1)
+      AcademicAffairService.updateAA(100000, "AA001", "FIT", 1)
     ).resolves.toEqual({
       EM: "Academic affair not found",
       EC: 11,
@@ -206,7 +190,7 @@ describe("\nTest update academic affair", () => {
   // Test invalid id case
   it("Academic affair id is invalid", async () => {
     await expect(
-      AcademicAffairService.updateAA("abc", "AA001", "FIT", "Dean", 1)
+      AcademicAffairService.updateAA("abc", "AA001", "FIT", 1)
     ).resolves.toEqual({
       EM: "Academic affair id is invalid",
       EC: 10,
@@ -219,7 +203,7 @@ describe("\nTest update academic affair", () => {
 describe("\nTest delete academic affair", () => {
   // Test success case
   it("Delete academic affair successfully", async () => {
-    await AcademicAffairService.createAA("AA001", "FIT", "Dean", 1);
+    await AcademicAffairService.createAA("AA001", "FIT", 1);
 
     const newAA = await db.AcademicAffair.findAll({
       limit: 1,
@@ -250,7 +234,7 @@ describe("Test server error", () => {
   it("Server error with createAA", async () => {
     await db.sequelize.close();
     await expect(
-      AcademicAffairService.createAA("AA001", "FIT", "Dean", 1)
+      AcademicAffairService.createAA("AA001", "FIT", 1)
     ).resolves.toEqual({
       EM: "There are something wrong in the server's services",
       EC: -1,
@@ -259,6 +243,7 @@ describe("Test server error", () => {
   });
 
   it("Server error with getAAById", async () => {
+    await db.sequelize.close();
     await expect(AcademicAffairService.getAAById(1)).resolves.toEqual({
       EM: "There are something wrong in the server's services",
       EC: -1,
@@ -267,6 +252,7 @@ describe("Test server error", () => {
   });
 
   it("Server error with getAAList", async () => {
+    await db.sequelize.close();
     await expect(AcademicAffairService.getAAList()).resolves.toEqual({
       EM: "There are something wrong in the server's services",
       EC: -1,
@@ -275,8 +261,9 @@ describe("Test server error", () => {
   });
 
   it("Server error with updateAA", async () => {
+    await db.sequelize.close();
     await expect(
-      AcademicAffairService.updateAA(1, "AA001", "FIT", "Dean", 1)
+      AcademicAffairService.updateAA(1, "AA001", "FIT", 1)
     ).resolves.toEqual({
       EM: "There are something wrong in the server's services",
       EC: -1,
@@ -285,6 +272,7 @@ describe("Test server error", () => {
   });
 
   it("Server error with deleteAA", async () => {
+    await db.sequelize.close();
     await expect(AcademicAffairService.deleteAA(1)).resolves.toEqual({
       EM: "There are something wrong in the server's services",
       EC: -1,
