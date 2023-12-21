@@ -1,6 +1,6 @@
 const db = require("../models/index");
 
-const createAA = async (aacode, faculty, position, userID) => {
+const createAA = async (aacode, faculty, userID) => {
   if (
     typeof aacode !== "string" ||
     typeof faculty !== "string" ||
@@ -19,7 +19,6 @@ const createAA = async (aacode, faculty, position, userID) => {
       await db.AcademicAffair.create({
         academicAffairCode: aacode,
         faculty: faculty,
-        position: position,
         userID: userID,
       });
       return {
@@ -98,7 +97,7 @@ const getAAList = async () => {
   }
 };
 
-const updateAA = async (id, aacode, faculty, position, userID) => {
+const updateAA = async (id, aacode, faculty, userID) => {
   if (typeof id !== "number" || id <= 0) {
     return {
       EM: "Academic affair id is invalid",
@@ -133,7 +132,6 @@ const updateAA = async (id, aacode, faculty, position, userID) => {
         await aa.update({
           aacode: aacode,
           faculty: faculty,
-          position: position,
         });
         return {
           EM: "Update academic affair successfully",
