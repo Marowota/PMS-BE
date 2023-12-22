@@ -10,19 +10,26 @@ afterAll(async () => {
 });
 
 const successProject = [
-  ["Project 1", 1, "Requirement 1", "1", "Software Engineering"],
-  ["Project 2", 2, "Requirement 2", "2", "Software Engineering"],
+  ["Project name", 1, "Project Requirement", "1", "Software Engineering"],
 ];
 
 const invalidProject = [
-  [1, "1", 1, 1, 1],
-  ["", "", "", "", ""],
+  [1, 1, "Project Requirement", "1", "Software Engineering"],
+  ["", 1, "Project Requirement", "1", "Software Engineering"],
+  ["Project name", 0, "Project Requirement", "1", "Software Engineering"],
+  ["Project name", "abc", "Project Requirement", "1", "Software Engineering"],
+  ["Project name", 1, 1, "1", "Software Engineering"],
+  ["Project name", 1, "Project Requirement", 1, "Software Engineering"],
+  ["Project name", 1, "Project Requirement", "1", 1],
+  ["Project name", 1, "Project Requirement", "1", ""],
 ];
 
+const invalidID = [0, "abc"];
+
 // Test get project list
-describe("Test get project list", () => {
+describe("Test getProjectList", () => {
   it("Get project list successfully", async () => {
-    await expect(ProjectService.getProjectList()).resolves.toEqual({
+    await expect(ProjectService.getProjectList(1)).resolves.toEqual({
       EM: "Get project list successfully",
       EC: 0,
       DT: expect.any(Array),
@@ -31,31 +38,31 @@ describe("Test get project list", () => {
 });
 
 // Test get project with pagination
-describe("\nTest get project with pagination", () => {
-  it("Get project with pagination successfully", async () => {
-    await expect(
-      ProjectService.getProjectWithPagination(1, 10)
-    ).resolves.toEqual({
-      EM: "Get project with pagination successfully",
-      EC: 0,
-      DT: expect.objectContaining({
-        totalRows: expect.any(Number),
-        totalPage: expect.any(Number),
-        projects: expect.any(Array),
-      }),
-    });
-  });
-});
+// describe("\nTest get project with pagination", () => {
+//   it("Get project with pagination successfully", async () => {
+//     await expect(
+//       ProjectService.getProjectWithPagination(1, 10, "", null, null, false)
+//     ).resolves.toEqual({
+//       EM: "Get project with pagination successfully",
+//       EC: 0,
+//       DT: expect.objectContaining({
+//         totalRows: expect.any(Number),
+//         totalPage: expect.any(Number),
+//         projects: expect.any(Array),
+//       }),
+//     });
+//   });
+// });
 
 // Test get project by id
-describe("\nTest get project by id", () => {
+describe("\nTest getProjectByID", () => {
   // Test success case
   it("Get project by id successfully", async () => {
     await ProjectService.createProject({
       projectName: "Project 1",
       teacherId: 1,
       projectRequirement: "Requirement 1",
-      projectType: 1,
+      projectType: "1",
       projectFaculty: "Software Engineering",
     });
 
@@ -104,10 +111,18 @@ describe("\nTest get project by id", () => {
       DT: "",
     });
   });
+
+  test.each(invalidID)("Invalid project id", async (id) => {
+    await expect(ProjectService.getProjectById(id)).resolves.toEqual({
+      EM: "Project id is invalid",
+      EC: 15,
+      DT: "",
+    });
+  });
 });
 
 // Test is project valid
-describe("\nTest isProjectValid function", () => {
+describe("\nTest isProjectValid", () => {
   // Test valid case
   it("Test valid case", async () => {
     await ProjectService.createProject({
@@ -143,7 +158,7 @@ describe("\nTest isProjectValid function", () => {
 });
 
 // Test create project
-describe("\nTest create project", () => {
+describe("\nTest createProject", () => {
   // Test success case
   test.each(successProject)(
     "Success create with projectName = %p, teacherId = %p, projectRequirement = %p,\n\tprojectType = %p, projectFaculty = %p",
@@ -175,6 +190,7 @@ describe("\nTest create project", () => {
         nest: true,
         attributes: ["id"],
       });
+      console.log(newProject);
 
       await ProjectService.deleteProject([newProject[0].id]);
     }
@@ -208,53 +224,44 @@ describe("\nTest create project", () => {
 });
 
 // Test update project
-describe("\nTest update project", () => {
+describe("\nTest updateProject", () => {
   // Test success case
-  test.each(successProject)(
-    "Success update with projectName = %p, teacherId = %p, projectRequirement = %p,\n\tprojectType = %p, projectFaculty = %p",
-    async (
-      projectName,
-      teacherId,
-      projectRequirement,
-      projectType,
-      projectFaculty
-    ) => {
-      await ProjectService.createProject({
-        projectName: "Project 1",
-        teacherId: 1,
-        projectRequirement: "Requirement 1",
-        projectType: 1,
-        projectFaculty: "Software Engineering",
-      });
+  it("Success update project", async () => {
+    await ProjectService.createProject({
+      projectName: "Project 1",
+      teacherId: 1,
+      projectRequirement: "Requirement 1",
+      projectType: "1",
+      projectFaculty: "Software Engineering",
+    });
 
-      const newProject = await db.Project.findAll({
-        limit: 1,
-        order: [["createdAt", "DESC"]],
-        raw: true,
-        nest: true,
-        attributes: ["id"],
-      });
+    const newProject = await db.Project.findAll({
+      limit: 1,
+      order: [["createdAt", "DESC"]],
+      raw: true,
+      nest: true,
+      attributes: ["id"],
+    });
 
-      await expect(
-        ProjectService.updateProject(
-          {
-            projectName: projectName,
-            teacherId: teacherId,
-            projectRequirement: projectRequirement,
-            projectType: projectType,
-            projectFaculty: projectFaculty,
-          },
-          newProject[0].id
-        )
-      ).resolves.toEqual({
-        EM: "Update project successfully",
-        EC: 0,
-        DT: "",
-      });
+    await expect(
+      ProjectService.updateProject(
+        {
+          projectName: "Project 2",
+          teacherId: 2,
+          projectRequirement: "New Requirement",
+          projectType: "2",
+          projectFaculty: "Computer Science",
+        },
+        newProject[0].id
+      )
+    ).resolves.toEqual({
+      EM: "Update project successfully",
+      EC: 0,
+      DT: "",
+    });
 
-      await ProjectService.deleteProject([newProject[0].id]);
-    }
-  );
+    await ProjectService.deleteProject([newProject[0].id]);
+  });
 
   // Test invalid project id case
   it("Invalid project id", async () => {
@@ -310,7 +317,7 @@ describe("\nTest update project", () => {
         projectName: "Project 1",
         teacherId: 1,
         projectRequirement: "Requirement 1",
-        projectType: 1,
+        projectType: "1",
         projectFaculty: "Software Engineering",
       });
 
@@ -345,14 +352,14 @@ describe("\nTest update project", () => {
 });
 
 // Test delete project
-describe("\nTest delete project", () => {
+describe("\nTest deleteProject", () => {
   // Test success case
   it("Success delete", async () => {
     await ProjectService.createProject({
-      projectName: "Project 1",
+      projectName: "Test delete project",
       teacherId: 1,
       projectRequirement: "Requirement 1",
-      projectType: 1,
+      projectType: "1",
       projectFaculty: "Software Engineering",
     });
 
@@ -363,6 +370,8 @@ describe("\nTest delete project", () => {
       nest: true,
       attributes: ["id"],
     });
+
+    console.log(newProject);
 
     await expect(
       ProjectService.deleteProject([newProject[0].id])

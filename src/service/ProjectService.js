@@ -333,6 +333,7 @@ const createProject = async (rawData) => {
     typeof rawData.projectName !== "string" ||
     rawData.projectName === "" ||
     typeof rawData.teacherId !== "number" ||
+    rawData.teacherId < 1 ||
     typeof rawData.projectRequirement !== "string" ||
     (rawData.projectType !== "1" && rawData.projectType !== "2") ||
     typeof rawData.projectFaculty !== "string" ||
@@ -352,6 +353,7 @@ const createProject = async (rawData) => {
           DT: "",
         };
       } else {
+        const currentTime = new Date();
         await db.Project.create({
           name: rawData.projectName,
           teacherID: rawData.teacherId,
@@ -360,7 +362,9 @@ const createProject = async (rawData) => {
           type: rawData.projectType,
           faculty: rawData.projectFaculty,
           isPublic: true,
-          isRegistered: false,
+          isRegistered: 0,
+          dateCreated: currentTime,
+          dateUpdated: currentTime,
         });
 
         return {
@@ -447,6 +451,7 @@ const updateProject = async (project, projectId) => {
     typeof project.projectName !== "string" ||
     project.projectName === "" ||
     typeof project.teacherId !== "number" ||
+    project.teacherId < 1 ||
     typeof project.projectRequirement !== "string" ||
     (project.projectType !== "1" && project.projectType !== "2") ||
     typeof project.projectFaculty !== "string" ||
@@ -469,6 +474,7 @@ const updateProject = async (project, projectId) => {
           type: project.projectType,
           faculty: project.projectFaculty,
           teacherID: project.teacherId,
+          updatedAt: new Date(),
         });
         return {
           EM: "Update project successfully",
