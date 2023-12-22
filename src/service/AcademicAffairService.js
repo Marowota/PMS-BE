@@ -7,7 +7,7 @@ const createAA = async (aacode, faculty, userID) => {
     typeof userID !== "number" ||
     faculty.length === 0 ||
     aacode.length === 0 ||
-    userID <= 0
+    userID < 1
   ) {
     return {
       EM: "Invalid academic affair information",
@@ -37,7 +37,7 @@ const createAA = async (aacode, faculty, userID) => {
 };
 
 const getAAById = async (id) => {
-  if (typeof id !== "number" || id <= 0) {
+  if (typeof id !== "number" || id < 1) {
     return {
       EM: "Academic affair id is invalid",
       EC: 10,
@@ -110,7 +110,7 @@ const updateAA = async (id, aacode, faculty, userID) => {
     typeof userID !== "number" ||
     faculty.length === 0 ||
     aacode.length === 0 ||
-    userID <= 0
+    userID < 1
   ) {
     return {
       EM: "Invalid academic affair information",

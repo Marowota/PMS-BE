@@ -56,7 +56,7 @@ const getUserByID = async (userId) => {
           break;
         }
       }
-      const userData = { ...user?.dataValues, ...data.dataValues, role };
+      const userData = { ...user?.dataValues, ...data?.dataValues, role };
       return {
         EM: "Get user successfully",
         EC: 0,
