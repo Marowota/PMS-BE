@@ -91,7 +91,7 @@ describe("\nTest getAnnouncementByID", () => {
 });
 
 // Test get announcement pagination
-describe("\nTest get announcement pagination", () => {
+describe("\nTest getAnnouncementPagination", () => {
   // Test success case
   it("Get announcement pagination successfully", async () => {
     await expect(
@@ -307,9 +307,9 @@ describe("\nTest deleteAnnouncement", () => {
   });
 
   // Test invalid id case
-  it("Invalid announcement id", async () => {
+  test.each(invalidId)("ID: %s (Invalid announcement id)", async (id) => {
     await expect(
-      AnnouncementService.deleteAnnouncement([1, 2, "abc"])
+      AnnouncementService.deleteAnnouncement([id, 1, 2])
     ).resolves.toEqual({
       EM: "Invalid announcement id",
       EC: 1,

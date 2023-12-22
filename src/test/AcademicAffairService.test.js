@@ -117,7 +117,7 @@ describe("\nTest getAAByID", () => {
 });
 
 // Test get academic affair list
-describe("\nTest get academic affair list", () => {
+describe("\nTest getAAList", () => {
   it("Get academic affair list successfully", async () => {
     await expect(AcademicAffairService.getAAList()).resolves.toEqual({
       EM: "Get academic affair list successfully",
