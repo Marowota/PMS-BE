@@ -14,10 +14,16 @@ const successCase = [["AA001", "FIT", 1]];
 const invalidCase = [
   [1, "FIT", 1],
   ["", "FIT", 1],
+  ["AA001", 1, 1],
+  ["AA001", "", 1],
+  ["AA001", "FIT", "abc"],
+  ["AA001", "FIT", 0],
 ];
 
+const invalidAAID = [0, "abc"];
+
 // Test create academic affair
-describe("Test create academic affair", () => {
+describe("Test createAA", () => {
   // Test success case
   test.each(successCase)(
     "Success create academic affair with aacode = %p, faculty = %p, userID = %p",
@@ -64,7 +70,7 @@ describe("Test create academic affair", () => {
 });
 
 // Test get academic affair by id
-describe("\nTest get academic affair by id", () => {
+describe("\nTest getAAByID", () => {
   // Test success case
   it("Get academic affair by id successfully", async () => {
     await AcademicAffairService.createAA("AA001", "FIT", 1);
@@ -98,13 +104,16 @@ describe("\nTest get academic affair by id", () => {
   });
 
   // Test invalid id case
-  it("Academic affair id is invalid", async () => {
-    await expect(AcademicAffairService.getAAById("abc")).resolves.toEqual({
-      EM: "Academic affair id is invalid",
-      EC: 10,
-      DT: "",
-    });
-  });
+  test.each(invalidAAID)(
+    "Invalid academic affair id with id = %p",
+    async (id) => {
+      await expect(AcademicAffairService.getAAById(id)).resolves.toEqual({
+        EM: "Academic affair id is invalid",
+        EC: 10,
+        DT: "",
+      });
+    }
+  );
 });
 
 // Test get academic affair list
@@ -119,7 +128,7 @@ describe("\nTest get academic affair list", () => {
 });
 
 // Test update academic affair
-describe("\nTest update academic affair", () => {
+describe("\nTest updateAA", () => {
   // Test success case
   test.each(successCase)(
     "Success update academic affair with aacode = %p, faculty = %p, userID = %p",
@@ -188,19 +197,22 @@ describe("\nTest update academic affair", () => {
   });
 
   // Test invalid id case
-  it("Academic affair id is invalid", async () => {
-    await expect(
-      AcademicAffairService.updateAA("abc", "AA001", "FIT", 1)
-    ).resolves.toEqual({
-      EM: "Academic affair id is invalid",
-      EC: 10,
-      DT: "",
-    });
-  });
+  test.each(invalidAAID)(
+    "Invalid academic affair id with id = %p",
+    async (id) => {
+      await expect(
+        AcademicAffairService.updateAA(id, "AA001", "FIT", 1)
+      ).resolves.toEqual({
+        EM: "Academic affair id is invalid",
+        EC: 10,
+        DT: "",
+      });
+    }
+  );
 });
 
 // Test delete academic affair
-describe("\nTest delete academic affair", () => {
+describe("\nTest deleteAA", () => {
   // Test success case
   it("Delete academic affair successfully", async () => {
     await AcademicAffairService.createAA("AA001", "FIT", 1);

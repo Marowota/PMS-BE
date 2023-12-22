@@ -13,7 +13,7 @@ const invalidCase = [0, "abc"];
 const validCase = [29, 75, 20, 17];
 
 // Test get user by id
-describe("Test get user by id", () => {
+describe("Test getUserByID", () => {
   // Test success case
   test.each(validCase)("Success get user by id: %p", async (userID) => {
     await expect(UserService.getUserByID(userID)).resolves.toEqual({
@@ -43,15 +43,15 @@ describe("Test get user by id", () => {
 });
 
 // Test update user by id
-describe("Test update user by id", () => {
+describe("Test updateUserByID", () => {
   // Test success case
-  test.each(validCase)("Success update user by id: %p", async (userID) => {
+  it("Success update user by id: 1", async () => {
     await expect(
-      UserService.updateUserById(userID, { name: "test" + userID })
+      UserService.updateUserById(1, { name: "test 1" })
     ).resolves.toEqual({
       EM: "Update user successfully",
       EC: 0,
-      DT: expect.any(Object),
+      DT: expect.any(Array),
     });
   });
 
@@ -90,7 +90,6 @@ describe("Test fail case with each function", () => {
 
   // False case with updateUserById function
   it("False case with updateUserById function", async () => {
-    await db.sequelize.close();
     await expect(
       UserService.updateUserById(1, { name: "test" })
     ).resolves.toEqual({

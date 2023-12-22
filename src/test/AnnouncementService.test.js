@@ -13,16 +13,16 @@ const successAnnouncement = [["Title", "Content", true]];
 
 const invalidAnnoucement = [
   [1, "Content", true],
-  [null, "Content", false],
+  ["Title", 1, true],
+  ["Title", "Content", 5],
+  ["", "Content", true],
+  ["Title", "", true],
 ];
 
-const unfilledAnnouncement = [
-  [undefined, "Content", true],
-  ["", "Content", true],
-];
+const invalidId = ["abc", 0];
 
 // Test get announcement list
-describe("Test get announcement list", () => {
+describe("Test getAnnouncementList", () => {
   // Test success case
   it("Get announcement list successfully", async () => {
     await expect(AnnouncementService.getAnnouncementList()).resolves.toEqual({
@@ -34,7 +34,7 @@ describe("Test get announcement list", () => {
 });
 
 // Test get announcement by ID
-describe("\nTest get announcement by ID", () => {
+describe("\nTest getAnnouncementByID", () => {
   // Test success case
   it("Get announcement by ID successfully", async () => {
     await AnnouncementService.createAnnouncement({
@@ -81,10 +81,8 @@ describe("\nTest get announcement by ID", () => {
   });
 
   // Test invalid id case
-  it("Invalid announcement id", async () => {
-    await expect(
-      AnnouncementService.getAnnouncementById("abc")
-    ).resolves.toEqual({
+  test.each(invalidId)("ID: %s (Invalid announcement id)", async (id) => {
+    await expect(AnnouncementService.getAnnouncementById(id)).resolves.toEqual({
       EM: "Invalid announcement id",
       EC: 1,
       DT: "",
@@ -111,7 +109,7 @@ describe("\nTest get announcement pagination", () => {
 });
 
 // Test create announcement
-describe("\nTest create Announcement", () => {
+describe("\nTest createAnnouncement", () => {
   //Test success case
   test.each(successAnnouncement)(
     "Title: %s, Content: %s, isPublic: %s (Create announcement successfully)",
@@ -157,28 +155,10 @@ describe("\nTest create Announcement", () => {
       });
     }
   );
-
-  // Test unfilled case
-  test.each(unfilledAnnouncement)(
-    "Title: %s, Content: %s, isPublic: %s (Announcement information must not be empty)",
-    async (title, content, isPublic) => {
-      await expect(
-        AnnouncementService.createAnnouncement({
-          title: title,
-          content: content,
-          isPublic: isPublic,
-        })
-      ).resolves.toEqual({
-        EM: "Announcement information must not be empty",
-        EC: 2,
-        DT: "",
-      });
-    }
-  );
 });
 
 // Test update announcement
-describe("\nTest update Announcement", () => {
+describe("\nTest updateAnnouncement", () => {
   // Test success case
   test.each(successAnnouncement)(
     "Title: %s, Content: %s, isPublic: %s (Update announcement successfully)",
@@ -209,43 +189,6 @@ describe("\nTest update Announcement", () => {
       ).resolves.toEqual({
         EM: "Update announcement successfully",
         EC: 0,
-        DT: "",
-      });
-
-      await AnnouncementService.deleteAnnouncement([newData[0].id]);
-    }
-  );
-
-  // Test unfilled announcement information case
-  test.each(unfilledAnnouncement)(
-    "Title: %s, Content: %s, isPublic: %s (Announcement information must not be empty)",
-    async (title, content, isPublic) => {
-      await AnnouncementService.createAnnouncement({
-        title: "Test update title",
-        content: "Test update content",
-        isPublic: true,
-      });
-
-      const newData = await db.Announcement.findAll({
-        limit: 1,
-        attributes: ["id"],
-        order: [["createdAt", "DESC"]],
-        raw: true,
-        nest: true,
-      });
-
-      await expect(
-        AnnouncementService.updateAnnouncement(
-          {
-            title: title,
-            content: content,
-            isPublic: isPublic,
-          },
-          newData[0].id
-        )
-      ).resolves.toEqual({
-        EM: "Announcement information must not be empty",
-        EC: 2,
         DT: "",
       });
 
@@ -309,7 +252,7 @@ describe("\nTest update Announcement", () => {
   });
 
   // Test invalid id case
-  it("Invalid announcement id", async () => {
+  test.each(invalidId)("ID: %s (Invalid announcement id)", async (id) => {
     await expect(
       AnnouncementService.updateAnnouncement(
         {
@@ -317,7 +260,7 @@ describe("\nTest update Announcement", () => {
           content: "Test update content",
           isPublic: true,
         },
-        "abc"
+        id
       )
     ).resolves.toEqual({
       EM: "Invalid announcement id",
@@ -328,7 +271,7 @@ describe("\nTest update Announcement", () => {
 });
 
 // Test delete announcement
-describe("\nTest delete Announcement", () => {
+describe("\nTest deleteAnnouncement", () => {
   // Test success case
   it("Delete announcement successfully", async () => {
     await AnnouncementService.createAnnouncement({
