@@ -2,7 +2,7 @@ import StudentServices from "../service/StudentServices";
 
 const getStudentProject = async (req, res) => {
   try {
-    const data = await StudentServices.getProjectOfStudent(req.query.id);
+    const data = await StudentServices.getProjectOfStudent(+req.query.id);
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,
