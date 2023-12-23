@@ -9,6 +9,8 @@ afterAll(async () => {
   await db.sequelize.close();
 });
 
+const util = require("util");
+
 const successProject = [
   ["Project name", 1, "Project Requirement", "1", "Software Engineering"],
 ];
@@ -26,6 +28,41 @@ const invalidProject = [
 
 const invalidID = [0, "abc"];
 
+const validTimeData = [
+  [
+    "2023-12-23T15:17",
+    "2024-01-06T15:17",
+    "Software Engineering",
+    "2023",
+    "HOC KY TEST",
+  ],
+];
+
+const invalidTimeData = [
+  [1, "2024-01-06T15:17", "Software Engineering", "2023", "HOC KY TEST"],
+  ["", "2024-01-06T15:17", "Software Engineering", "2023", "HOC KY TEST"],
+  ["2023-12-23T15:17", 1, "Software Engineering", "2023", "HOC KY TEST"],
+  ["2023-12-23T15:17", "", "Software Engineering", "2023", "HOC KY TEST"],
+  ["2023-12-23T15:17", "2024-01-06T15:17", 1, "2023", "HOC KY TEST"],
+  ["2023-12-23T15:17", "2024-01-06T15:17", "", "2023", "HOC KY TEST"],
+  [
+    "2023-12-23T15:17",
+    "2024-01-06T15:17",
+    "Software Engineering",
+    1,
+    "HOC KY TEST",
+  ],
+  [
+    "2023-12-23T15:17",
+    "2024-01-06T15:17",
+    "Software Engineering",
+    "",
+    "HOC KY TEST",
+  ],
+  ["2023-12-23T15:17", "2024-01-06T15:17", "Software Engineering", "2023", 1],
+  ["2023-12-23T15:17", "2024-01-06T15:17", "Software Engineering", "2023", ""],
+];
+
 // Test get project list
 describe("Test getProjectList", () => {
   it("Get project list successfully", async () => {
@@ -41,7 +78,7 @@ describe("Test getProjectList", () => {
 // describe("\nTest get project with pagination", () => {
 //   it("Get project with pagination successfully", async () => {
 //     await expect(
-//       ProjectService.getProjectWithPagination(1, 10, "", null, null, false)
+//       ProjectService.getProjectWithPagination(1, 10)
 //     ).resolves.toEqual({
 //       EM: "Get project with pagination successfully",
 //       EC: 0,
@@ -393,12 +430,348 @@ describe("\nTest deleteProject", () => {
 
   // Test invalid project id case
   it("Invalid project id", async () => {
-    await expect(ProjectService.deleteProject(["abc", "def"])).resolves.toEqual(
-      {
-        EM: "Project id is invalid",
-        EC: 15,
+    await expect(ProjectService.deleteProject([0, "abc"])).resolves.toEqual({
+      EM: "Project id is invalid",
+      EC: 15,
+      DT: "",
+    });
+  });
+
+  it("Project is registered", async () => {
+    await expect(ProjectService.deleteProject([84])).resolves.toEqual({
+      EM: "Project is registered, cant delete",
+      EC: 29,
+      DT: "",
+    });
+  });
+});
+
+// Test get all time
+describe("\nTest getAllTime", () => {
+  it("Get all time successfully", async () => {
+    await expect(ProjectService.getAllTime()).resolves.toEqual({
+      EM: "Get all time successfully",
+      EC: 0,
+      DT: expect.any(Array),
+    });
+  });
+});
+
+describe("\nTest createTime", () => {
+  test.each(validTimeData)(
+    "Success create time",
+    async (start, end, faculty, year, semester) => {
+      const newTime = await ProjectService.createTime({
+        newStart: start,
+        newEnd: end,
+        faculty: faculty,
+        newYear: year,
+        newSemester: semester,
+      });
+
+      expect(newTime).toEqual({
+        EM: "Create time successfully",
+        EC: 0,
+        DT: newTime.DT,
+      });
+
+      await ProjectService.deleteTime(newTime.DT.id);
+    }
+  );
+
+  test.each(invalidTimeData)(
+    "Invalid time",
+    async (start, end, faculty, year, semester) => {
+      await expect(
+        ProjectService.createTime({
+          newStart: start,
+          newEnd: end,
+          faculty: faculty,
+          newYear: year,
+          newSemester: semester,
+        })
+      ).resolves.toEqual({
+        EM: "Time data is invalid",
+        EC: 30,
         DT: "",
-      }
-    );
+      });
+    }
+  );
+});
+
+describe("\nTest updateTime", () => {
+  it("Success update time", async () => {
+    const newTime = await ProjectService.createTime({
+      newStart: "2023-12-23T15:17",
+      newEnd: "2024-01-06T15:17",
+      faculty: "Software Engineering",
+      newYear: "2023",
+      newSemester: "HOC KY TEST",
+    });
+
+    const newUpdatedTime = await ProjectService.updateTime({
+      newStart: "2023-12-23T15:17",
+      newEnd: "2024-01-06T15:17",
+      faculty: "Software Engineering",
+      newYear: "2023",
+      newSemester: "HOC KY TEST 2222",
+      id: newTime.DT.id,
+    });
+
+    expect(newUpdatedTime).toEqual({
+      EM: "Update time successfully",
+      EC: 0,
+      DT: newUpdatedTime.DT,
+    });
+
+    await ProjectService.deleteTime(newTime.DT.id);
+  });
+
+  test.each(invalidTimeData)(
+    "Invalid time",
+    async (start, end, faculty, year, semester) => {
+      await expect(
+        ProjectService.updateTime({
+          newStart: start,
+          newEnd: end,
+          faculty: faculty,
+          newYear: year,
+          newSemester: semester,
+          id: 1,
+        })
+      ).resolves.toEqual({
+        EM: "Time data is invalid",
+        EC: 30,
+        DT: "",
+      });
+    }
+  );
+
+  test.each(invalidID)("Invalid time id", async (id) => {
+    await expect(
+      ProjectService.updateTime({
+        newStart: "2023-12-23T15:17",
+        newEnd: "2024-01-06T15:17",
+        faculty: "Software Engineering",
+        newYear: "2023",
+        newSemester: "HOC KY TEST",
+        id: id,
+      })
+    ).resolves.toEqual({
+      EM: "Time id is invalid",
+      EC: 33,
+      DT: "",
+    });
+  });
+});
+
+describe("\nTest deleteTime", () => {
+  it("Success delete time", async () => {
+    const newTime = await ProjectService.createTime({
+      newStart: "2023-12-23T15:17",
+      newEnd: "2024-01-06T15:17",
+      faculty: "Software Engineering",
+      newYear: "2023",
+      newSemester: "HOC KY TEST",
+    });
+
+    await expect(ProjectService.deleteTime(newTime.DT.id)).resolves.toEqual({
+      EM: "Delete time successfully",
+      EC: 0,
+      DT: "",
+    });
+  });
+
+  test.each(invalidID)("Invalid time id", async (id) => {
+    await expect(ProjectService.deleteTime(id)).resolves.toEqual({
+      EM: "Time id is invalid",
+      EC: 33,
+      DT: "",
+    });
+  });
+});
+
+describe("\nTest setProjectTime", () => {
+  it("Success set project time", async () => {
+    await expect(
+      ProjectService.setProjectTime({
+        timeId: 1,
+        selectedProject: [{ id: 1 }, { id: 2 }],
+      })
+    ).resolves.toEqual({
+      EM: "Set project time successfully",
+      EC: 0,
+      DT: "",
+    });
+  });
+
+  test.each(invalidID)("Invalid time id", async (id) => {
+    await expect(
+      ProjectService.setProjectTime({
+        timeId: id,
+        selectedProject: [{ id: 1 }, { id: 2 }],
+      })
+    ).resolves.toEqual({
+      EM: "Time id is invalid",
+      EC: 33,
+      DT: "",
+    });
+  });
+
+  test.each(invalidID)("Invalid project id", async (id) => {
+    await expect(
+      ProjectService.setProjectTime({
+        timeId: 1,
+        selectedProject: [{ id: id }, { id: 2 }],
+      })
+    ).resolves.toEqual({
+      EM: "Project id is invalid",
+      EC: 15,
+      DT: "",
+    });
+  });
+});
+
+describe("\nTest server error with each function", () => {
+  it("Test get project list", async () => {
+    await db.sequelize.close();
+    await expect(ProjectService.getProjectList(1)).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test get project with pagination", async () => {
+    await db.sequelize.close();
+    await expect(
+      ProjectService.getProjectWithPagination(1, 10, "", null, null, false)
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test get project by id", async () => {
+    await db.sequelize.close();
+    await expect(ProjectService.getProjectById(1)).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test create project", async () => {
+    await db.sequelize.close();
+    await expect(
+      ProjectService.createProject({
+        projectName: "Project name",
+        teacherId: 1,
+        projectRequirement: "Project Requirement",
+        projectType: "1",
+        projectFaculty: "Software Engineering",
+      })
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test update project", async () => {
+    await db.sequelize.close();
+    await expect(
+      ProjectService.updateProject(
+        {
+          projectName: "Project name",
+          teacherId: 1,
+          projectRequirement: "Project Requirement",
+          projectType: "1",
+          projectFaculty: "Software Engineering",
+        },
+        1
+      )
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test delete project", async () => {
+    await db.sequelize.close();
+    await expect(ProjectService.deleteProject([1])).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test get all time", async () => {
+    await db.sequelize.close();
+    await expect(ProjectService.getAllTime()).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test create time", async () => {
+    await db.sequelize.close();
+    await expect(
+      ProjectService.createTime({
+        newStart: "2023-12-23T15:17",
+        newEnd: "2024-01-06T15:17",
+        faculty: "Software Engineering",
+        newYear: "2023",
+        newSemester: "HOC KY TEST",
+      })
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test update time", async () => {
+    await db.sequelize.close();
+    await expect(
+      ProjectService.updateTime({
+        newStart: "2023-12-23T15:17",
+        newEnd: "2024-01-06T15:17",
+        faculty: "Software Engineering",
+        newYear: "2023",
+        newSemester: "HOC KY TEST",
+        id: 1,
+      })
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test delete time", async () => {
+    await db.sequelize.close();
+    await expect(ProjectService.deleteTime(1)).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
+  });
+
+  it("Test set project time", async () => {
+    await db.sequelize.close();
+    await expect(
+      ProjectService.setProjectTime({
+        timeId: 1,
+        selectedProject: [{ id: 1 }, { id: 2 }],
+      })
+    ).resolves.toEqual({
+      EM: "There are something wrong in the server's services",
+      EC: -1,
+      DT: "",
+    });
   });
 });

@@ -92,7 +92,7 @@ const getScoreList = async ({ timeId = null, teacherUserId = null }) => {
 };
 
 const getScoreById = async (id) => {
-  if (typeof id !== "number" || id <= 0) {
+  if (typeof id !== "number" || id < 1) {
     return {
       EM: "Score id is invalid",
       EC: 7,
@@ -244,7 +244,7 @@ const getScorePagination = async ({
     };
   } catch (error) {
     return {
-      EM: "There is something wrong in the server's services",
+      EM: "There are something wrong in the server's services",
       EC: -1,
       DT: "",
     };
@@ -270,43 +270,71 @@ const getScorePagination = async ({
 // };
 
 const updateScore = async (value, implementationId) => {
-  try {
-    await db.Implementation.update(
-      { score: value.score },
-      { where: { id: implementationId } }
-    );
+  if (typeof value.score !== "number" || value.score < 0 || value.score > 10) {
+    return {
+      EM: "Score is invalid",
+      EC: 34,
+      DT: "",
+    };
+  } else if (typeof implementationId !== "number" || implementationId < 1) {
+    return {
+      EM: "Implementation id is invalid",
+      EC: 35,
+      DT: "",
+    };
+  } else {
+    try {
+      await db.Implementation.update(
+        { score: value.score },
+        { where: { id: implementationId } }
+      );
 
-    return {
-      EM: "Update score successfully",
-      EC: 0,
-      DT: "",
-    };
-  } catch (error) {
-    return {
-      EM: "There are something wrong in the server's services",
-      EC: -1,
-      DT: "",
-    };
+      return {
+        EM: "Update score successfully",
+        EC: 0,
+        DT: "",
+      };
+    } catch (error) {
+      return {
+        EM: "There are something wrong in the server's services",
+        EC: -1,
+        DT: "",
+      };
+    }
   }
 };
 
 const updateSubmitLink = async (projectId, submitLink) => {
-  try {
-    await db.Implementation.update(
-      { submissionLink: submitLink },
-      { where: { projectID: projectId } }
-    );
+  if (typeof projectId !== "number" || projectId < 1) {
     return {
-      EM: "Update submit link successfully",
-      EC: 0,
+      EM: "Project id is invalid",
+      EC: 15,
       DT: "",
     };
-  } catch (error) {
+  } else if (typeof submitLink !== "string" || submitLink === "") {
     return {
-      EM: "There are something wrong in the server's services",
-      EC: -1,
+      EM: "Submit link is invalid",
+      EC: 36,
       DT: "",
     };
+  } else {
+    try {
+      await db.Implementation.update(
+        { submissionLink: submitLink },
+        { where: { projectID: projectId } }
+      );
+      return {
+        EM: "Update submit link successfully",
+        EC: 0,
+        DT: "",
+      };
+    } catch (error) {
+      return {
+        EM: "There are something wrong in the server's services",
+        EC: -1,
+        DT: "",
+      };
+    }
   }
 };
 

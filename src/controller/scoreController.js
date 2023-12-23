@@ -76,7 +76,10 @@ const getScoreById = async (req, res) => {
 
 const putUpdateScore = async (req, res) => {
   try {
-    let updateInfo = await ScoreService.updateScore(req.body, req.params.id);
+    let updateInfo = await ScoreService.updateScore(
+      { score: +req.body.score },
+      +req.params.id
+    );
     return res.status(200).json({
       EM: updateInfo.EM,
       EC: updateInfo.EC,
@@ -94,7 +97,7 @@ const putUpdateScore = async (req, res) => {
 const putUpdateSubmitLink = async (req, res) => {
   try {
     let updateInfo = await ScoreService.updateSubmitLink(
-      req.params.id,
+      +req.params.id,
       req.body.submitLink
     );
     return res.status(200).json({

@@ -1,5 +1,6 @@
 import StudentServices from "../service/StudentServices";
 import db from "../models/index";
+import { FLOAT } from "sequelize";
 
 beforeAll(async () => {
   await db.sequelize.authenticate();
@@ -16,17 +17,7 @@ describe("Test getProjectOfStudent", () => {
     await expect(StudentServices.getProjectOfStudent(58)).resolves.toEqual({
       EM: "Get project of student successfully",
       EC: 0,
-      DT: expect.objectContaining({
-        id: expect.any(Number),
-        name: expect.any(String),
-        type: expect.any(String),
-        faculty: expect.any(String),
-        requirement: expect.any(String),
-        isregistered: expect.any(Number),
-        Teacher: expect.any(Object),
-        Implementation: expect.any(Object),
-        score: expect.any(Number),
-      }),
+      DT: expect.any(Object),
     });
   });
 

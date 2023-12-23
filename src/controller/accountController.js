@@ -37,7 +37,7 @@ const getAllAccount = async (req, res) => {
 
 const getAccountById = async (req, res) => {
   try {
-    let data = await AccountServices.getAccountById(req.query.id);
+    let data = await AccountServices.getAccountById(+req.query.id);
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,
