@@ -216,7 +216,7 @@ const putUpdateTime = async (req, res) => {
 
 const handleDeleteTime = async (req, res) => {
   try {
-    let deleteInfo = await ProjectService.deleteTime(req.body.id);
+    let deleteInfo = await ProjectService.deleteTime(+req.body.id);
     return res.status(200).json({
       EM: deleteInfo.EM,
       EC: deleteInfo.EC,
@@ -233,7 +233,10 @@ const handleDeleteTime = async (req, res) => {
 
 const putSetProjectTime = async (req, res) => {
   try {
-    let timeData = await ProjectService.setProjectTime(req.body);
+    let timeData = await ProjectService.setProjectTime({
+      timeId: +req.body.timeId,
+      selectedProject: req.body.selectedProject,
+    });
     return res.status(200).json({
       EM: timeData.EM,
       EC: timeData.EC,

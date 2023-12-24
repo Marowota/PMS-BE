@@ -5,6 +5,7 @@ const salt = bcrypt.genSaltSync(10);
 
 const hashUserPassword = (userPassword) => {
   let hashPassword = bcrypt.hashSync(userPassword, salt);
+  console.log("hashPassword", hashPassword);
   return hashPassword;
 };
 
@@ -76,6 +77,13 @@ const getAccountPagination = async (page, limit, search = "") => {
 };
 
 const getAccountById = async (id) => {
+  if (typeof id !== "number" || id < 1) {
+    return {
+      EM: "Invalid account id",
+      EC: 31,
+      DT: "",
+    };
+  }
   try {
     const result = await db.Account.findOne({
       attributes: ["id", "username", "role", "userID"],
@@ -105,6 +113,14 @@ const getAccountById = async (id) => {
       raw: true,
       nest: true,
     });
+
+    if (!result) {
+      return {
+        EM: "Account not found",
+        EC: 32,
+        DT: "",
+      };
+    }
 
     return {
       EM: "Get account info successfully",
