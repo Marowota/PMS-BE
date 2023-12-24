@@ -125,7 +125,7 @@ const putRegisterProject = async (req, res) => {
   try {
     let registerInfo = await ProjectService.registerProject(
       req.body,
-      req.params.id
+      +req.params.id
     );
     return res.status(200).json({
       EM: registerInfo.EM,
@@ -145,8 +145,8 @@ const putRegisterProject = async (req, res) => {
 const putUnregisterProject = async (req, res) => {
   try {
     const unregisterInfo = await ProjectService.unregisterProject(
-      req.query.studentId,
-      req.query.projectId
+      +req.query.studentId,
+      +req.query.projectId
     );
     return res.status(200).json({
       EM: unregisterInfo.EM,
