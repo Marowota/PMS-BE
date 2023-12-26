@@ -233,13 +233,16 @@ describe("\nTest deleteAA", () => {
   });
 
   // Test invalid id case
-  it("Academic affair id is invalid", async () => {
-    await expect(AcademicAffairService.deleteAA("abc")).resolves.toEqual({
-      EM: "Academic affair id is invalid",
-      EC: 10,
-      DT: "",
-    });
-  });
+  test.each(invalidAAID)(
+    "Invalid academic affair id with id = %p",
+    async (id) => {
+      await expect(AcademicAffairService.deleteAA(id)).resolves.toEqual({
+        EM: "Academic affair id is invalid",
+        EC: 10,
+        DT: "",
+      });
+    }
+  );
 });
 
 describe("Test server error", () => {
