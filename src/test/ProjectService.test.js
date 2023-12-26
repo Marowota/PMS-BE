@@ -63,6 +63,8 @@ const invalidTimeData = [
   ["2023-12-23T15:17", "2024-01-06T15:17", "Software Engineering", "2023", ""],
 ];
 
+const existProject = "The Intelligent Recommender System";
+
 // Test get project list
 describe("Test getProjectList", () => {
   it("Get project list successfully", async () => {
@@ -258,6 +260,26 @@ describe("\nTest createProject", () => {
       });
     }
   );
+
+  // Test project exist case
+  it("Project exist", async () => {
+    await expect(
+      ProjectService.createProject(
+        {
+          projectName: existProject,
+          teacherId: 1,
+          projectRequirement: "Requirement 1",
+          projectType: "1",
+          projectFaculty: "Software Engineering",
+        },
+        1
+      )
+    ).resolves.toEqual({
+      EM: "Project is already exist",
+      EC: 12,
+      DT: "",
+    });
+  });
 });
 
 // Test update project
@@ -301,17 +323,17 @@ describe("\nTest updateProject", () => {
   });
 
   // Test invalid project id case
-  it("Invalid project id", async () => {
+  test.each(invalidID)("Invalid project id", async (id) => {
     await expect(
       ProjectService.updateProject(
         {
-          projectName: "Project 1",
-          teacherId: 1,
-          projectRequirement: "Requirement 1",
-          projectType: 1,
-          projectFaculty: "Software Engineering",
+          projectName: "Project 2",
+          teacherId: 2,
+          projectRequirement: "New Requirement",
+          projectType: "2",
+          projectFaculty: "Computer Science",
         },
-        "abc"
+        id
       )
     ).resolves.toEqual({
       EM: "Project id is invalid",
@@ -438,7 +460,7 @@ describe("\nTest deleteProject", () => {
   });
 
   it("Project is registered", async () => {
-    await expect(ProjectService.deleteProject([84])).resolves.toEqual({
+    await expect(ProjectService.deleteProject([100])).resolves.toEqual({
       EM: "Project is registered, cant delete",
       EC: 29,
       DT: "",

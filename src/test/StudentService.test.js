@@ -43,7 +43,7 @@ describe("Test getProjectOfStudent", () => {
   });
 
   it("Should return error message when student has not registered any project yet", async () => {
-    await expect(StudentServices.getProjectOfStudent(92)).resolves.toEqual({
+    await expect(StudentServices.getProjectOfStudent(93)).resolves.toEqual({
       EM: "You have not registered any project yet!",
       EC: 27,
       DT: "",

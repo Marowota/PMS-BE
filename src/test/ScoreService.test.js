@@ -12,6 +12,7 @@ afterAll(async () => {
 const invalidScoreId = [0, "abc"];
 const validScore = [
   [{ score: 10 }, 1],
+  [{ score: 5 }, 1],
   [{ score: 0 }, 1],
 ];
 const invalidScore = [
