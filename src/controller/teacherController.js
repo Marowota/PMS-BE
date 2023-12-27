@@ -19,7 +19,7 @@ const getAllTeacher = async (req, res) => {
 
 const getAnalysisDataOfTeacher = async (req, res) => {
   try {
-    const data = await teacherService.getAnalysisOfTeacher(req.query.id);
+    const data = await teacherService.getAnalysisOfTeacher(+req.query.id);
     return res.status(200).json({
       EM: data.EM,
       EC: data.EC,
