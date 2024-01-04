@@ -356,7 +356,7 @@ const createProject = async (rawData) => {
         };
       } else {
         const currentTime = new Date();
-        await db.Project.create({
+        const data = await db.Project.create({
           name: rawData.projectName,
           teacherID: rawData.teacherId,
           requirement: rawData.projectRequirement,
@@ -367,6 +367,12 @@ const createProject = async (rawData) => {
           isRegistered: 0,
           dateCreated: currentTime,
           dateUpdated: currentTime,
+        });
+
+        console.log(data.id);
+        await db.Implementation.create({
+          projectID: data.id,
+          isCompleted: false,
         });
 
         return {
@@ -606,7 +612,7 @@ const registerProject = async (student, projectId) => {
           // Check if the corresponding record has a student1ID
 
           let studentData;
-          if (projectList.student1ID) {
+          if (projectList?.student1ID) {
             // If it exists, create a new Implementation with student2Id
             studentData = await db.Implementation.update(
               { student2ID: studentId },
