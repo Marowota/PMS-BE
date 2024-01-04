@@ -14,6 +14,7 @@ const getAnnouncementList = async () => {
       ],
       raw: true,
       nest: true,
+      order: [["id", "DESC"]],
     });
     return {
       EM: "Get announcement list successfully",
@@ -98,6 +99,7 @@ const getAnnouncementPagination = async (page, limit, search = "") => {
       nest: true,
       offset: offset,
       limit: limit,
+      order: [["id", "DESC"]],
     });
 
     let totalPage = Math.ceil(count / limit);
